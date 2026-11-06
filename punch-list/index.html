@@ -1,0 +1,1075 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Punch List</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23A6192E'/%3E%3Ctext x='50' y='70' font-size='70' text-anchor='middle' fill='white' font-family='Arial' font-weight='700'%3E✓%3C/text%3E%3C/svg%3E">
+<style>
+:root {
+  --bg: #FFFFFF;
+  --surface: #FFFFFF;
+  --stripe: #F6F5F2;
+  --sunk: #E8E6E0;
+  --ink: #000000;
+  --ink-2: #222222;
+  --muted: #666666;
+  --rule: #000000;
+  --hair: #C7C5C0;
+  --hair-2: #A7A49E;
+  --accent: #A6192E;
+  --accent-ink: #FFFFFF;
+  --warn: #8A4A00;
+  --crit: #A6192E;
+  --good: #1F6F38;
+  --header-bg: #1A1A1A;
+  --header-ink: #FFFFFF;
+  --body: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Consolas", "Menlo", monospace;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 13px;
+  line-height: 1.4;
+  padding-left: max(14px, env(safe-area-inset-left, 0px));
+  padding-right: max(14px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 50; background: var(--bg); }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+::selection { background: var(--accent); color: var(--accent-ink); }
+button { font-family: inherit; }
+
+.masthead { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); padding-top: 14px; border-bottom: 3px solid var(--accent); }
+.kicker { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding-bottom: 8px; }
+.title { font-family: var(--body); font-weight: 700; font-size: clamp(18px, 2.2vw, 24px); letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink); margin: 0; display: flex; align-items: center; gap: 10px; }
+.title .bar { display: inline-block; width: 8px; height: 20px; background: var(--accent); }
+.meta-row { display: flex; align-items: baseline; gap: 18px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 700; flex-wrap: wrap; }
+.meta-row .sep { color: var(--hair-2); }
+.meta-row b { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+.meta-row .crit { color: var(--accent); }
+.meta-row .me { color: var(--ink); cursor: pointer; text-decoration: underline dotted; }
+
+.toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0 10px; flex-wrap: wrap; border-bottom: 1px solid var(--hair); }
+.tabs { display: flex; gap: 0; flex-wrap: wrap; }
+.tab { appearance: none; background: var(--surface); color: var(--ink-2); border: 1px solid var(--hair-2); border-left-width: 0; font-weight: 700; font-size: 10px; line-height: 1; letter-spacing: 0.08em; text-transform: uppercase; padding: 9px 14px; cursor: pointer; }
+.tab:first-child { border-left-width: 1px; }
+.tab:hover { background: var(--stripe); }
+.tab[aria-current="true"] { background: var(--header-bg); color: var(--header-ink); border-color: var(--header-bg); }
+.toolbar-right { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+.btn { appearance: none; background: var(--surface); color: var(--ink); border: 1px solid var(--hair-2); padding: 6px 12px; font-weight: 700; font-size: 10px; line-height: 1; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; }
+.btn:hover { background: var(--stripe); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.primary:hover { background: var(--accent); filter: brightness(1.08); }
+.btn.dark { background: var(--header-bg); color: var(--header-ink); border-color: var(--header-bg); }
+.btn.dark:hover { background: var(--header-bg); filter: brightness(1.2); }
+.btn.ghost { background: transparent; border-color: var(--hair); color: var(--muted); }
+.btn.ghost:hover { color: var(--ink); background: var(--stripe); }
+.btn.sm { padding: 5px 9px; font-size: 9px; }
+.btn.danger { color: var(--crit); border-color: var(--crit); }
+
+main { padding: 12px 0 80px; }
+
+.table { display: grid; grid-template-columns: 28px 26px minmax(220px, 2.2fr) minmax(0, 5fr) minmax(90px, auto) minmax(95px, auto); border: 1px solid var(--rule); background: var(--surface); }
+.th { background: var(--header-bg); color: var(--header-ink); font-weight: 700; font-size: 10px; line-height: 1; letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 10px; border-right: 1px solid rgba(255,255,255,0.08); }
+.th:last-child { border-right: 0; }
+.cell { padding: 10px 10px; border-top: 1px solid var(--hair); background: var(--surface); min-width: 0; font-size: 13px; }
+.cell.stripe { background: var(--stripe); }
+.row-group-start .cell { border-top: 2px solid var(--rule); }
+.cell.pin { padding: 8px 4px 8px 8px; text-align: center; }
+.pin-btn { appearance: none; background: transparent; border: 1px solid var(--hair-2); width: 20px; height: 20px; padding: 0; cursor: pointer; color: var(--muted); display: inline-grid; place-items: center; font-size: 13px; line-height: 1; }
+.pin-btn:hover { color: var(--ink); border-color: var(--ink); }
+.pin-btn.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.pin-btn.on:hover { background: var(--accent); filter: brightness(1.08); }
+.cell.num { font-family: var(--mono); font-weight: 700; font-size: 13px; color: var(--ink); font-variant-numeric: tabular-nums; padding-top: 11px; }
+.cell.goal { font-weight: 700; font-size: 13px; color: var(--ink); letter-spacing: 0.01em; padding-top: 11px; }
+.cell.outcome { font-weight: 600; font-size: 13px; color: var(--ink); cursor: pointer; position: relative; }
+.cell.outcome:hover { background: var(--stripe); }
+.cell.outcome.complete { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--hair-2); font-weight: 400; }
+.cell.outcome .notes-pip { display: inline-block; margin-left: 8px; padding: 1px 5px; font-family: var(--mono); font-weight: 700; font-size: 9px; background: var(--sunk); color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.cell.outcome .child-count { display: inline-block; margin-left: 8px; color: var(--muted); font-weight: 400; font-size: 11px; font-variant-numeric: tabular-nums; }
+.action-row.row-group-start .cell { border-top: 1px solid var(--hair); }
+.cell.action-outcome { padding-left: 24px; font-weight: 400; font-size: 12px; color: var(--ink-2); background: var(--stripe); cursor: pointer; border-top: 1px solid var(--hair); position: relative; }
+.cell.action-outcome:hover { background: var(--sunk); }
+.cell.action-outcome.complete { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--hair-2); }
+.cell.action-outcome::before { content: "└"; color: var(--hair-2); position: absolute; left: 10px; top: 10px; font-family: var(--mono); font-size: 11px; }
+.cell.action-empty { background: var(--stripe); border-top: 1px solid var(--hair); font-size: 11px; color: var(--muted); padding: 7px 10px 7px 24px; }
+.cell.action-empty a { color: var(--ink); text-decoration: underline; cursor: pointer; }
+.cell.action-cell { background: var(--stripe); border-top: 1px solid var(--hair); font-size: 12px; }
+.cell.owner { font-weight: 500; font-size: 12px; color: var(--ink); white-space: nowrap; }
+.cell.owner .initials { display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 7px; background: var(--sunk); color: var(--ink); font-weight: 700; font-size: 9px; border: 1px solid var(--hair-2); vertical-align: -5px; }
+.cell.owner.unassigned { color: var(--muted); }
+.cell.owner.unassigned .initials { background: transparent; border-style: dashed; color: var(--muted); }
+.cell.due { font-family: var(--mono); font-weight: 600; font-size: 11px; font-variant-numeric: tabular-nums; color: var(--ink); white-space: nowrap; letter-spacing: 0.02em; }
+.cell.due .tag { display: inline-block; padding: 3px 7px; border: 1px solid var(--hair-2); background: var(--surface); }
+.cell.due .tag.warn { color: var(--warn); border-color: var(--warn); font-weight: 700; }
+.cell.due .tag.crit { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); font-weight: 700; }
+.cell.due .tag.good { color: var(--good); border-color: var(--good); }
+.cell.due .tag.unset { color: var(--muted); border-style: dashed; }
+.dept-chip { display: inline-block; margin-left: 8px; padding: 1px 6px; background: var(--sunk); color: var(--ink-2); font-family: var(--mono); font-weight: 600; font-size: 10px; letter-spacing: 0.02em; border: 1px solid var(--hair); text-transform: none; }
+
+.band { grid-column: 1 / -1; background: var(--header-bg); color: var(--header-ink); padding: 9px 12px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 2px solid var(--rule); }
+.band .label { font-weight: 700; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
+.band .label .sub { color: rgba(255,255,255,0.65); margin-left: 12px; font-weight: 500; letter-spacing: 0.06em; }
+.band .btn { background: transparent; color: var(--header-ink); border-color: rgba(255,255,255,0.4); }
+.band .btn:hover { background: rgba(255,255,255,0.1); }
+.band .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.empty { grid-column: 1 / -1; padding: 40px 20px; text-align: center; color: var(--muted); background: var(--stripe); border-top: 1px solid var(--hair); }
+.empty h3 { font-weight: 700; font-size: 11px; color: var(--ink); margin: 0 0 6px; letter-spacing: 0.08em; text-transform: uppercase; }
+.empty p { margin: 0; font-size: 12px; }
+
+.focus-stage { padding: 4px 0 40px; }
+.focus-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 8px 0 12px; border-bottom: 1px solid var(--hair); margin-bottom: 12px; }
+.focus-head h2 { font-size: 15px; font-weight: 700; margin: 0; letter-spacing: 0.04em; text-transform: uppercase; }
+.focus-head .lede { color: var(--muted); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; }
+.focus-group { border: 1px solid var(--rule); background: var(--surface); margin-bottom: 16px; }
+.focus-group-head { background: var(--header-bg); color: var(--header-ink); padding: 8px 12px; font-weight: 700; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
+.focus-group-head .main { color: rgba(255,255,255,0.6); margin-right: 10px; font-weight: 500; }
+.focus-action { display: grid; grid-template-columns: 28px minmax(0, 1fr) minmax(90px, auto) minmax(95px, auto) minmax(90px, auto); gap: 0; align-items: center; padding: 0; border-top: 1px solid var(--hair); }
+.focus-action:first-of-type { border-top: 0; }
+.focus-action .check { padding: 0 8px; text-align: center; }
+.focus-check { appearance: none; background: var(--surface); border: 1.5px solid var(--hair-2); width: 20px; height: 20px; padding: 0; cursor: pointer; color: transparent; display: inline-grid; place-items: center; font-size: 15px; line-height: 1; font-weight: 700; }
+.focus-check:hover { border-color: var(--ink); }
+.focus-check.on { background: var(--good); border-color: var(--good); color: #FFFFFF; }
+.focus-action .title { padding: 10px 10px; font-size: 15px; font-weight: 500; color: var(--ink); cursor: pointer; min-width: 0; text-transform: none; letter-spacing: 0; display: block; margin: 0; }
+.focus-action .title:hover { background: var(--stripe); }
+.focus-action .title.complete { color: var(--muted); text-decoration: line-through; }
+.focus-action .owner { padding: 0 10px; font-size: 13px; }
+.focus-action .owner .initials { display: inline-grid; place-items: center; width: 22px; height: 22px; background: var(--sunk); color: var(--ink); font-weight: 700; font-size: 10px; border: 1px solid var(--hair-2); margin-right: 7px; vertical-align: -5px; }
+.focus-action .due { padding: 0 10px; font-family: var(--mono); font-weight: 600; font-size: 12px; font-variant-numeric: tabular-nums; }
+.focus-action .due .tag { display: inline-block; padding: 3px 7px; border: 1px solid var(--hair-2); }
+.focus-action .due .tag.warn { color: var(--warn); border-color: var(--warn); font-weight: 700; }
+.focus-action .due .tag.crit { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); font-weight: 700; }
+.focus-action .due .tag.good { color: var(--good); border-color: var(--good); }
+.focus-action .due .tag.unset { color: var(--muted); border-style: dashed; }
+.focus-action .dept { padding: 0 10px 0 0; font-family: var(--mono); font-weight: 600; font-size: 11px; color: var(--muted); text-align: right; }
+
+body.tv .masthead { position: static; border-bottom: 4px solid var(--accent); padding-top: 18px; }
+body.tv .toolbar, body.tv .meta-row { display: none; }
+body.tv .title { font-size: clamp(26px, 3.6vw, 44px); }
+body.tv .title .bar { width: 12px; height: 32px; }
+body.tv main { padding-top: 16px; }
+body.tv .focus-stage { padding-top: 0; }
+body.tv .focus-head h2 { font-size: 24px; }
+body.tv .focus-head .lede { font-size: 14px; }
+body.tv .focus-group-head { font-size: 14px; padding: 12px 16px; }
+body.tv .focus-action .title { font-size: 22px; font-weight: 500; padding: 16px 14px; }
+body.tv .focus-action .owner { font-size: 18px; }
+body.tv .focus-action .owner .initials { width: 32px; height: 32px; font-size: 13px; }
+body.tv .focus-action .due { font-size: 16px; }
+body.tv .focus-action .due .tag { padding: 5px 10px; }
+body.tv .focus-action .dept { font-size: 14px; }
+body.tv .focus-action .check { padding: 0 12px; }
+body.tv .focus-check { width: 28px; height: 28px; font-size: 20px; border-width: 2px; }
+body.tv .focus-action { grid-template-columns: 50px minmax(0, 1fr) minmax(130px, auto) minmax(140px, auto) minmax(110px, auto); }
+body.tv .exit-tv { position: fixed; top: max(16px, env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); z-index: 60; display: inline-flex; }
+.exit-tv { display: none; }
+
+.dept-section { margin-top: 18px; }
+.dept-bucket-head { display: flex; align-items: baseline; gap: 14px; padding: 10px 0 6px; }
+.dept-bucket-head h3 { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); padding-left: 10px; border-left: 4px solid var(--accent); }
+.dept-bucket-head.progressing h3 { border-color: var(--good); }
+.dept-bucket-head.behind h3 { border-color: var(--warn); }
+.dept-bucket-head.at-risk h3 { border-color: var(--accent); }
+.dept-bucket-head .count { color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.dept-table { display: grid; grid-template-columns: minmax(180px, 2fr) repeat(7, minmax(60px, 1fr)) minmax(180px, 2.5fr) 70px; border: 1px solid var(--rule); background: var(--surface); margin-bottom: 14px; }
+.dept-table .th { font-size: 9px; padding: 8px 6px; text-align: center; writing-mode: horizontal-tb; }
+.dept-table .th.first { text-align: left; padding-left: 10px; }
+.dept-table .th.last { text-align: left; padding-left: 10px; }
+.dept-cell { padding: 8px 10px; border-top: 1px solid var(--hair); background: var(--surface); font-size: 13px; min-width: 0; }
+.dept-cell.subhead { grid-column: 1 / -1; background: var(--sunk); color: var(--muted); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; padding: 6px 10px; border-top: 2px solid var(--rule); }
+.dept-cell.name { font-weight: 700; font-size: 13px; }
+.dept-cell.notes { font-size: 12px; color: var(--ink-2); }
+.dept-cell.notes input { width: 100%; background: transparent; border: 0; border-bottom: 1px dashed transparent; font: inherit; color: inherit; padding: 2px 0; }
+.dept-cell.notes input:focus { outline: 0; border-bottom-color: var(--accent); }
+.dept-cell.bubble { text-align: center; padding: 6px 4px; }
+.dept-cell.bucket-ctrl select { width: 100%; font: 600 10px/1 var(--body); text-transform: uppercase; letter-spacing: 0.04em; padding: 4px 6px; background: var(--surface); color: var(--ink); border: 1px solid var(--hair-2); }
+.bubble-btn { appearance: none; background: transparent; border: 0; padding: 0; cursor: pointer; font-size: 18px; line-height: 1; color: var(--ink); font-family: var(--body); }
+.bubble-btn[data-s="0"] { color: var(--hair-2); }
+.bubble-btn[data-s="1"] { color: var(--warn); }
+.bubble-btn[data-s="2"] { color: var(--good); }
+.bubble-btn:hover { outline: 1px solid var(--ink); }
+.dept-legend { padding: 8px 0 12px; font-size: 11px; color: var(--muted); display: flex; gap: 18px; letter-spacing: 0.04em; }
+.dept-legend span b { color: var(--ink); font-weight: 700; margin-right: 4px; }
+
+.scrim { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); opacity: 0; pointer-events: none; transition: opacity 0.14s; z-index: 20; }
+.scrim.open { opacity: 1; pointer-events: auto; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(480px, 100vw); background: var(--surface); color: var(--ink); border-left: 1px solid var(--rule); transform: translateX(110%); transition: transform 0.18s cubic-bezier(.2,.8,.2,1); z-index: 21; display: flex; flex-direction: column; padding-top: env(safe-area-inset-top, 0px); padding-right: env(safe-area-inset-right, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.drawer.open { transform: translateX(0); }
+.drawer-head { padding: 14px 20px; background: var(--header-bg); color: var(--header-ink); position: relative; }
+.drawer-head .close { position: absolute; top: 8px; right: 10px; background: transparent; border: 0; width: 28px; height: 28px; color: rgba(255,255,255,0.8); cursor: pointer; font-size: 18px; line-height: 1; }
+.drawer-head .close:hover { color: var(--header-ink); background: rgba(255,255,255,0.1); }
+.drawer-eyebrow { font-weight: 700; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.65); margin-bottom: 6px; }
+.drawer-eyebrow .ref { color: var(--accent); }
+.drawer-title { font-weight: 600; font-size: 16px; margin: 0; padding-right: 32px; letter-spacing: 0.005em; }
+.drawer-meta { display: grid; grid-template-columns: 80px 1fr; gap: 8px 12px; padding: 12px 20px; border-bottom: 1px solid var(--hair); font-size: 12px; align-items: center; margin: 0; }
+.drawer-meta dt { font-weight: 700; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.drawer-meta dd { margin: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0; }
+.drawer-meta input, .drawer-meta select { font: 500 12px var(--body); color: var(--ink); background: var(--bg); border: 1px solid var(--hair-2); padding: 6px 8px; width: 100%; min-width: 0; }
+.drawer-meta input:focus, .drawer-meta select:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.drawer-meta .status-pill { display: inline-block; padding: 3px 8px; font-weight: 700; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid currentColor; }
+.drawer-meta .status-pill.active { color: var(--ink-2); }
+.drawer-meta .status-pill.complete { color: var(--good); }
+.drawer-actions { display: flex; gap: 6px; padding: 10px 20px; border-bottom: 1px solid var(--hair); flex-wrap: wrap; background: var(--stripe); }
+.subitems { padding: 10px 20px 0; border-bottom: 1px solid var(--hair); background: var(--surface); }
+.subitems h4 { font-weight: 700; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 4px 0 8px; }
+.subitem { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto auto; gap: 8px; align-items: center; padding: 6px 0; border-top: 1px solid var(--hair); font-size: 12px; }
+.subitem:first-of-type { border-top: 0; }
+.subitem .status { text-align: center; }
+.subitem .title { cursor: pointer; }
+.subitem .title:hover { text-decoration: underline; }
+.subitem.complete .title { color: var(--muted); text-decoration: line-through; }
+.subitem .owner-mini { color: var(--muted); font-size: 11px; }
+.subitem .due-mini { color: var(--muted); font-family: var(--mono); font-size: 11px; font-variant-numeric: tabular-nums; }
+.add-subitem { display: flex; gap: 6px; align-items: center; padding: 8px 0 12px; }
+.add-subitem input { flex: 1; background: var(--bg); color: var(--ink); border: 1px solid var(--hair-2); padding: 6px 8px; font-size: 12px; }
+.logs-section { flex: 1; overflow: auto; padding: 10px 20px 20px; }
+.logs-section h4 { font-weight: 700; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 2px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--hair); }
+.log { padding: 8px 0; border-top: 1px solid var(--hair); display: flex; gap: 10px; }
+.log:first-of-type { border-top: 0; padding-top: 4px; }
+.log .who { flex: 0 0 auto; width: 24px; height: 24px; background: var(--sunk); display: grid; place-items: center; font-weight: 700; font-size: 9px; color: var(--ink); border: 1px solid var(--hair-2); }
+.log .what { flex: 1; min-width: 0; }
+.log .head { display: flex; justify-content: space-between; gap: 10px; font-size: 10px; color: var(--muted); letter-spacing: 0.02em; margin-bottom: 2px; font-variant-numeric: tabular-nums; text-transform: uppercase; font-weight: 700; }
+.log .head b { color: var(--ink); font-weight: 700; letter-spacing: 0.02em; }
+.log .body { font-size: 13px; line-height: 1.5; word-wrap: break-word; white-space: pre-wrap; }
+.log.system .body { font-style: italic; color: var(--muted); font-size: 12px; }
+.composer { border-top: 1px solid var(--rule); padding: 10px 20px; display: flex; gap: 8px; flex-direction: column; background: var(--sunk); }
+.composer textarea { width: 100%; min-height: 54px; resize: vertical; font: 400 13px/1.45 var(--body); color: var(--ink); background: var(--bg); border: 1px solid var(--hair-2); padding: 8px 10px; }
+.composer textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.composer .row-bottom { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.composer .as { font-size: 9px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; font-weight: 700; }
+
+dialog.sheet { border: 1px solid var(--rule); background: var(--surface); color: var(--ink); padding: 0; width: min(480px, 92vw); }
+dialog.sheet::backdrop { background: rgba(0,0,0,0.5); }
+dialog.sheet .sheet-head { padding: 12px 20px; background: var(--header-bg); color: var(--header-ink); font-weight: 700; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+dialog.sheet .sheet-body { padding: 14px 20px; display: flex; flex-direction: column; gap: 10px; }
+dialog.sheet label { display: block; font-weight: 700; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+dialog.sheet input, dialog.sheet select, dialog.sheet textarea { width: 100%; font: 400 13px var(--body); background: var(--bg); color: var(--ink); border: 1px solid var(--hair-2); padding: 7px 10px; }
+dialog.sheet .sheet-foot { padding: 10px 20px; border-top: 1px solid var(--hair); display: flex; justify-content: flex-end; gap: 6px; background: var(--stripe); }
+
+.status-note { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); background: var(--header-bg); color: var(--header-ink); padding: 8px 14px; font-weight: 700; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; z-index: 30; opacity: 0; transition: opacity 0.18s; border: 1px solid var(--rule); }
+.status-note.show { opacity: 0.97; }
+.conn { padding: 36px 20px; text-align: center; color: var(--muted); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; }
+
+@media (max-width: 760px) {
+  .table { grid-template-columns: 24px 24px minmax(140px, 1.6fr) minmax(0, 3fr) auto auto; }
+  .cell.outcome { font-size: 12px; }
+  .dept-table { grid-template-columns: 1fr; }
+  .dept-table .th { display: none; }
+  .dept-table .th.first { display: block; }
+  .dept-cell { grid-column: 1 / -1; }
+  .focus-action { grid-template-columns: 28px minmax(0, 1fr) auto; }
+  .focus-action .owner, .focus-action .dept { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="kicker">
+    <h1 class="title"><span class="bar"></span>This Week's Punch List</h1>
+    <div class="meta-row">
+      <span id="today">—</span><span class="sep">·</span>
+      <span>SIGNED AS <span class="me" id="meName" title="Change your name">—</span></span><span class="sep">·</span>
+      <span><b id="focusCount">0</b> IN FOCUS</span><span class="sep">·</span>
+      <span><b id="activeCount">0</b> OPEN</span><span class="sep">·</span>
+      <span><b id="completeCount">0</b> DONE</span><span class="sep">·</span>
+      <span>NEXT GRANT <b class="crit" id="countdown">—</b></span>
+    </div>
+  </div>
+  <div class="toolbar">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-view="week" aria-current="true">This week</button>
+      <button class="tab" role="tab" data-view="focus">Focus</button>
+      <button class="tab" role="tab" data-view="depts">Departments</button>
+      <button class="tab" role="tab" data-view="review">Grant review</button>
+      <button class="tab" role="tab" data-view="archive">Archive</button>
+    </div>
+    <div class="toolbar-right">
+      <button class="btn ghost sm" id="tvToggle" title="Bullpen display mode">TV MODE</button>
+      <button class="btn sm" id="addGoalBtn">+ Main</button>
+      <button class="btn sm" id="addOutcomeBtn">+ Contributing</button>
+      <button class="btn dark sm" id="addActionBtn">+ Action</button>
+    </div>
+  </div>
+</div>
+
+<button class="btn primary exit-tv" id="exitTvBtn">✕ EXIT TV MODE</button>
+
+<main id="stage">
+  <div class="conn" id="connNote">Connecting to Supabase…</div>
+</main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+
+<dialog class="sheet" id="addOutcomeDlg"><form method="dialog" id="addOutcomeForm">
+  <div class="sheet-head">New contributing outcome</div>
+  <div class="sheet-body">
+    <div><label for="aoGoal">Under main outcome</label><select id="aoGoal" required></select></div>
+    <div><label for="aoTitle">Contributing outcome</label><input id="aoTitle" required placeholder="A clear sub-goal of the main outcome"></div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+      <div><label for="aoOwner">Owner</label><input id="aoOwner" list="peopleList" placeholder="e.g. Tyler"><datalist id="peopleList"></datalist></div>
+      <div><label for="aoDue">Due</label><input id="aoDue" type="date"></div>
+    </div>
+  </div>
+  <div class="sheet-foot"><button class="btn ghost" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Add</button></div>
+</form></dialog>
+
+<dialog class="sheet" id="addGoalDlg"><form method="dialog" id="addGoalForm">
+  <div class="sheet-head">New main outcome</div>
+  <div class="sheet-body"><div><label for="agTitle">Main outcome</label><input id="agTitle" required placeholder="What's achieved when this goal is done?"></div></div>
+  <div class="sheet-foot"><button class="btn ghost" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Add</button></div>
+</form></dialog>
+
+<dialog class="sheet" id="addActionDlg"><form method="dialog" id="addActionForm">
+  <div class="sheet-head">New action</div>
+  <div class="sheet-body">
+    <div><label for="atOutcome">Under contributing outcome</label><select id="atOutcome" required></select></div>
+    <div><label for="atTitle">Action (what will you DO)</label><input id="atTitle" required placeholder="A small, concrete thing you can finish in one sitting"></div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+      <div><label for="atOwner">Owner</label><input id="atOwner" list="peopleList" placeholder="e.g. Tyler"></div>
+      <div><label for="atDue">Due</label><input id="atDue" type="date"></div>
+    </div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+      <div><label for="atDept">Department tag</label><select id="atDept"><option value="">— none —</option></select></div>
+      <div><label for="atFocus">Focus</label><select id="atFocus"><option value="1">Show in Focus</option><option value="0">Hide from Focus</option></select></div>
+    </div>
+  </div>
+  <div class="sheet-foot"><button class="btn ghost" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Add</button></div>
+</form></dialog>
+
+<dialog class="sheet" id="nameDlg"><form method="dialog" id="nameForm">
+  <div class="sheet-head">Who are you?</div>
+  <div class="sheet-body">
+    <div><label for="nameInput">Your name</label><input id="nameInput" required placeholder="e.g. Tyler" maxlength="40" autofocus></div>
+    <div style="font-size:11px;color:var(--muted);">Shown next to your notes. Stored only in this browser — change anytime by clicking your name up top.</div>
+  </div>
+  <div class="sheet-foot"><button class="btn primary" value="ok">Save</button></div>
+</form></dialog>
+
+<div class="status-note" id="statusNote" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+// ===== Supabase connection =====
+const SUPABASE_URL = 'https://gtkmztkxhlwbadlflbxx.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_sVqmmKhE-ncI1w4nTK2HeQ_W3EemC20';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  realtime: { params: { eventsPerSecond: 5 } },
+});
+
+// ===== Utilities =====
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const el = (tag, attrs = {}, kids = []) => {
+  const e = document.createElement(tag);
+  for (const k in attrs) {
+    if (k === 'class') e.className = attrs[k];
+    else if (k === 'text') e.textContent = attrs[k];
+    else if (k === 'html') e.innerHTML = attrs[k];
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), attrs[k]);
+    else if (attrs[k] === true) e.setAttribute(k, '');
+    else if (attrs[k] !== false && attrs[k] != null) e.setAttribute(k, attrs[k]);
+  }
+  if (!Array.isArray(kids)) kids = [kids];
+  for (const k of kids) { if (k == null || k === false) continue; e.appendChild(typeof k === 'string' ? document.createTextNode(k) : k); }
+  return e;
+};
+const initials = (name) => (name || '').trim().split(/\s+/).map(p => p[0] || '').join('').slice(0, 2).toUpperCase() || '—';
+const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Math.random().toString(36).slice(2) + Date.now().toString(36));
+const todayYMD = () => new Date().toISOString().slice(0, 10);
+const parseYMD = (s) => { if (!s) return null; const [y, m, d] = s.split('-').map(Number); if (!y) return null; return new Date(y, (m || 1) - 1, d || 1); };
+const fmtDueTag = (due) => {
+  if (!due) return { text: '—', cls: 'unset' };
+  const t = parseYMD(todayYMD()).getTime();
+  const d = parseYMD(due).getTime();
+  const days = Math.round((d - t) / (1000 * 60 * 60 * 24));
+  const mmdd = due.slice(5).replace('-', '/');
+  if (days < 0) return { text: mmdd + ' · −' + Math.abs(days) + 'd', cls: 'crit' };
+  if (days === 0) return { text: 'TODAY', cls: 'crit' };
+  if (days <= 3) return { text: mmdd + ' · ' + days + 'd', cls: 'warn' };
+  return { text: mmdd, cls: '' };
+};
+const fmtRelative = (iso) => {
+  if (!iso) return '';
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.round(diff / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return m + 'm ago';
+  const h = Math.round(m / 60);
+  if (h < 24) return h + 'h ago';
+  const d = Math.round(h / 24);
+  if (d < 14) return d + 'd ago';
+  return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+};
+const longDate = (d) => d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
+const shortDate = (iso) => iso ? new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '';
+
+// ===== Field mappers (DB <-> app) =====
+const mapGoalFrom = r => ({ id: r.id, title: r.title, order: r.order, createdAt: r.created_at });
+const mapOutcomeFrom = r => ({ id: r.id, goalId: r.goal_id, title: r.title, owner: r.owner || '', due: r.due || '', status: r.status || 'active', order: r.order ?? 0, inFocus: !!r.in_focus, createdAt: r.created_at, completedAt: r.completed_at, completedBy: r.completed_by });
+const mapActionFrom = r => ({ id: r.id, outcomeId: r.outcome_id, title: r.title, owner: r.owner || '', due: r.due || '', status: r.status || 'active', order: r.order ?? 0, inFocus: !!r.in_focus, department: r.department_id, createdAt: r.created_at, completedAt: r.completed_at, completedBy: r.completed_by });
+const mapLogFrom = r => ({ id: r.id, outcomeId: r.outcome_id, actionId: r.action_id, authorId: r.author_id, authorName: r.author_name || '', text: r.body, kind: r.kind, createdAt: r.created_at });
+const mapDeptFrom = r => ({ id: r.id, name: r.name, bucket: r.bucket, order: r.order ?? 0, subhead: r.subhead || null, cells: r.cells || {}, notes: r.notes || '' });
+
+const mapOutcomeTo = (patch) => {
+  const o = {};
+  if ('title' in patch) o.title = patch.title;
+  if ('goalId' in patch) o.goal_id = patch.goalId;
+  if ('owner' in patch) o.owner = patch.owner;
+  if ('due' in patch) o.due = patch.due;
+  if ('status' in patch) o.status = patch.status;
+  if ('order' in patch) o.order = patch.order;
+  if ('inFocus' in patch) o.in_focus = patch.inFocus;
+  if ('completedAt' in patch) o.completed_at = patch.completedAt;
+  if ('completedBy' in patch) o.completed_by = patch.completedBy;
+  if ('createdAt' in patch) o.created_at = patch.createdAt;
+  return o;
+};
+const mapActionTo = (patch) => {
+  const o = {};
+  if ('title' in patch) o.title = patch.title;
+  if ('outcomeId' in patch) o.outcome_id = patch.outcomeId;
+  if ('owner' in patch) o.owner = patch.owner;
+  if ('due' in patch) o.due = patch.due;
+  if ('status' in patch) o.status = patch.status;
+  if ('order' in patch) o.order = patch.order;
+  if ('inFocus' in patch) o.in_focus = patch.inFocus;
+  if ('department' in patch) o.department_id = patch.department;
+  if ('completedAt' in patch) o.completed_at = patch.completedAt;
+  if ('completedBy' in patch) o.completed_by = patch.completedBy;
+  if ('createdAt' in patch) o.created_at = patch.createdAt;
+  return o;
+};
+
+// ===== State =====
+const state = {
+  goals: [], outcomes: [], actions: [], logs: [], depts: [], meta: {},
+  view: 'week', selected: null,
+  loaded: { goals: false, outcomes: false, actions: false, logs: false, depts: false, meta: false },
+  me: { id: null, name: '' },
+};
+const COLS = ['rosterValid','planReturned','inputsReceived','clinicalSeparable','modeled','fundingBasis','ctaAgreed'];
+const COL_LABELS = ['Roster valid','Plan returned','Inputs received','Clinical separable','Modeled','Funding basis','CTA agreed'];
+
+// ===== Identity (local to the browser) =====
+function loadIdentity() {
+  try {
+    let id = localStorage.getItem('pl.uid');
+    if (!id) { id = uuid(); localStorage.setItem('pl.uid', id); }
+    state.me.id = id;
+    state.me.name = localStorage.getItem('pl.name') || '';
+  } catch { state.me.id = uuid(); state.me.name = ''; }
+}
+function saveName(name) {
+  state.me.name = (name || '').trim();
+  try { localStorage.setItem('pl.name', state.me.name); } catch {}
+  $('#meName').textContent = state.me.name || 'anonymous';
+  render();
+}
+function promptName(reason) {
+  const dlg = $('#nameDlg');
+  $('#nameInput').value = state.me.name || '';
+  if (reason) { /* could show reason */ }
+  dlg.showModal();
+}
+$('#nameForm').addEventListener('submit', (e) => {
+  const v = $('#nameInput').value.trim();
+  if (!v) { e.preventDefault(); return; }
+  saveName(v);
+});
+$('#meName').addEventListener('click', () => promptName());
+
+// ===== Boot =====
+(async function boot() {
+  loadIdentity();
+  $('#meName').textContent = state.me.name || 'anonymous';
+
+  const tvStored = (() => { try { return localStorage.getItem('pl.tv') === '1'; } catch { return false; } })();
+  if (tvStored) { document.body.classList.add('tv'); location.hash = '#focus'; }
+  $('#tvToggle').onclick = () => { document.body.classList.add('tv'); location.hash = '#focus'; try { localStorage.setItem('pl.tv', '1'); } catch {} };
+  $('#exitTvBtn').onclick = () => { document.body.classList.remove('tv'); try { localStorage.removeItem('pl.tv'); } catch {} };
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (document.body.classList.contains('tv')) { document.body.classList.remove('tv'); try { localStorage.removeItem('pl.tv'); } catch {} return; }
+      if (state.selected) closeDrawer();
+    }
+  });
+
+  const applyHash = () => {
+    const h = (location.hash || '').replace('#', '').toLowerCase();
+    state.view = ['week','focus','review','archive','depts'].includes(h) ? h : 'week';
+    render();
+  };
+  addEventListener('hashchange', applyHash);
+  applyHash();
+
+  $$('.tab').forEach(t => t.addEventListener('click', () => { location.hash = '#' + t.dataset.view; }));
+  $('#today').textContent = longDate(new Date());
+
+  wireDialogs();
+  try { await Promise.all([
+    loadAndSubscribe('goals', (rows) => state.goals = rows.map(mapGoalFrom), 'goals'),
+    loadAndSubscribe('outcomes', (rows) => state.outcomes = rows.map(mapOutcomeFrom), 'outcomes'),
+    loadAndSubscribe('actions', (rows) => state.actions = rows.map(mapActionFrom), 'actions'),
+    loadAndSubscribe('logs', (rows) => state.logs = rows.map(mapLogFrom), 'logs'),
+    loadAndSubscribe('depts', (rows) => state.depts = rows.map(mapDeptFrom), 'depts'),
+    loadMeta(),
+  ]); }
+  catch (e) { console.error(e); $('#connNote').textContent = 'Could not reach Supabase. Check network and try again.'; return; }
+  render();
+})();
+
+async function loadAndSubscribe(table, assign) {
+  const { data, error } = await sb.from(table).select('*');
+  if (error) { console.error(table, error); throw error; }
+  assign(data || []);
+  state.loaded[table] = true;
+  sb.channel('pub-' + table)
+    .on('postgres_changes', { event: '*', schema: 'public', table }, async () => {
+      const { data: d2 } = await sb.from(table).select('*');
+      if (d2) { assign(d2); render(); }
+    })
+    .subscribe();
+}
+async function loadMeta() {
+  const { data } = await sb.from('meta').select('*').eq('id', 'state').maybeSingle();
+  state.meta = data ? { lastGrantMeeting: data.last_grant_meeting } : {};
+  state.loaded.meta = true;
+  sb.channel('pub-meta')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'meta' }, async () => {
+      const { data: d2 } = await sb.from('meta').select('*').eq('id', 'state').maybeSingle();
+      state.meta = d2 ? { lastGrantMeeting: d2.last_grant_meeting } : {};
+      render();
+    })
+    .subscribe();
+}
+
+// ===== Rendering =====
+function render() {
+  if (!state.loaded.outcomes) return;
+  $$('.tab').forEach(t => t.setAttribute('aria-current', t.dataset.view === state.view ? 'true' : 'false'));
+  const active = state.outcomes.filter(o => o.status !== 'complete');
+  const complete = state.outcomes.filter(o => o.status === 'complete');
+  const focusItems = allFocusItems();
+  $('#activeCount').textContent = active.length;
+  $('#completeCount').textContent = complete.length;
+  $('#focusCount').textContent = focusItems.length;
+  const next = nextGrantFrom(state.meta.lastGrantMeeting);
+  $('#countdown').textContent = next.label;
+  const stage = $('#stage'); stage.textContent = '';
+  if (state.view === 'focus') renderFocus(stage);
+  else if (state.view === 'depts') renderDepts(stage);
+  else if (state.view === 'review') renderReview(stage);
+  else if (state.view === 'archive') renderArchive(stage);
+  else renderWeek(stage);
+  const peopleList = $('#peopleList');
+  const names = Array.from(new Set([...state.outcomes, ...state.actions].map(o => o.owner).filter(Boolean))).sort();
+  peopleList.textContent = '';
+  names.forEach(n => peopleList.appendChild(el('option', { value: n })));
+  if (state.selected) renderDrawer();
+}
+
+function nextGrantFrom(lastIso) {
+  const now = new Date();
+  for (let i = 0; i < 10; i++) {
+    const d = new Date(now); d.setDate(d.getDate() + i); d.setHours(0,0,0,0);
+    if (d.getDay() === 2 || d.getDay() === 4) {
+      const t0 = new Date(); t0.setHours(0,0,0,0);
+      const days = Math.round((d - t0) / (1000 * 60 * 60 * 24));
+      return { label: days === 0 ? 'TODAY' : days === 1 ? 'TOMORROW' : (days + ' DAYS'), target: d };
+    }
+  }
+  return { label: 'SOON', target: null };
+}
+function allFocusItems() {
+  const fo = state.outcomes.filter(o => o.inFocus && o.status !== 'complete');
+  const fa = state.actions.filter(a => a.inFocus && a.status !== 'complete');
+  return [...fo, ...fa];
+}
+function sortByDue(a, b) {
+  const ad = a.due ? parseYMD(a.due).getTime() : Infinity;
+  const bd = b.due ? parseYMD(b.due).getTime() : Infinity;
+  if (ad !== bd) return ad - bd;
+  return (a.order ?? 0) - (b.order ?? 0);
+}
+
+function buildHeader() {
+  return [
+    el('div', { class: 'th', title: 'Pin to Focus' }, '★'),
+    el('div', { class: 'th', text: '#' }),
+    el('div', { class: 'th', text: 'Main outcome' }),
+    el('div', { class: 'th', text: 'Contributing outcomes & actions' }),
+    el('div', { class: 'th', text: 'Owner' }),
+    el('div', { class: 'th', text: 'Due' }),
+  ];
+}
+
+function renderWeek(stage) {
+  const activeByGoal = new Map();
+  state.outcomes.filter(o => o.status !== 'complete').forEach(o => {
+    const arr = activeByGoal.get(o.goalId) || []; arr.push(o); activeByGoal.set(o.goalId, arr);
+  });
+  const goals = [...state.goals].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const visible = goals.filter(g => activeByGoal.has(g.id));
+  const table = el('div', { class: 'table', role: 'table' });
+  buildHeader().forEach(h => table.appendChild(h));
+  if (visible.length === 0) {
+    table.appendChild(el('div', { class: 'empty' }, [el('h3', { text: 'Nothing on the list' }), el('p', { text: 'Add a main outcome and start committing to contributing outcomes.' })]));
+    stage.appendChild(table); return;
+  }
+  visible.forEach((g, idx) => {
+    const outcomes = (activeByGoal.get(g.id) || []).sort(sortByDue);
+    outcomes.forEach((o, i) => {
+      appendOutcomeRow(table, g, o, i === 0, idx + 1);
+      const acts = state.actions.filter(a => a.outcomeId === o.id && a.status !== 'complete').sort(sortByDue);
+      if (acts.length === 0) {
+        table.appendChild(el('div', { class: 'cell action-cell' }));
+        table.appendChild(el('div', { class: 'cell action-cell' }));
+        table.appendChild(el('div', { class: 'cell action-cell' }));
+        const addCell = el('div', { class: 'cell action-empty' });
+        addCell.appendChild(el('a', { text: '+ add an action', onclick: (e) => { e.preventDefault(); openAddActionFor(o.id); } }));
+        table.appendChild(addCell);
+        table.appendChild(el('div', { class: 'cell action-cell' }));
+        table.appendChild(el('div', { class: 'cell action-cell' }));
+      } else {
+        acts.forEach(a => appendActionRow(table, a));
+      }
+    });
+  });
+  stage.appendChild(table);
+}
+
+function appendOutcomeRow(table, goal, o, isFirstInGroup, goalIdx) {
+  const rowClass = isFirstInGroup ? ' row-group-start' : '';
+  const logCount = state.logs.filter(l => l.outcomeId === o.id && l.kind !== 'system').length;
+  const actCount = state.actions.filter(a => a.outcomeId === o.id).length;
+  const pin = buildPinButton(o.inFocus, () => toggleOutcomeFocus(o.id, !o.inFocus));
+  table.appendChild(el('div', { class: 'cell pin' + rowClass }, [pin]));
+  table.appendChild(el('div', { class: 'cell num' + rowClass, text: isFirstInGroup ? String(goalIdx) : '' }));
+  table.appendChild(el('div', { class: 'cell goal' + rowClass, text: isFirstInGroup ? goal.title : '' }));
+  const outcomeChildren = [o.title];
+  if (actCount > 0) outcomeChildren.push(el('span', { class: 'child-count', text: '· ' + actCount + ' action' + (actCount === 1 ? '' : 's') }));
+  if (logCount > 0) outcomeChildren.push(el('span', { class: 'notes-pip', text: logCount + (logCount === 1 ? ' note' : ' notes') }));
+  table.appendChild(el('div', { class: 'cell outcome' + rowClass, onclick: () => openDrawer('outcome', o.id), role: 'button', tabindex: '0', onkeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDrawer('outcome', o.id); } } }, outcomeChildren));
+  const ownerCell = o.owner ? el('div', { class: 'cell owner' + rowClass }, [el('span', { class: 'initials', text: initials(o.owner) }), o.owner]) : el('div', { class: 'cell owner unassigned' + rowClass }, [el('span', { class: 'initials', text: '?' }), 'Unassigned']);
+  const due = fmtDueTag(o.due);
+  const dueCell = el('div', { class: 'cell due' + rowClass }, [el('span', { class: 'tag' + (due.cls ? ' ' + due.cls : ''), text: due.text })]);
+  table.appendChild(ownerCell); table.appendChild(dueCell);
+}
+
+function appendActionRow(table, a) {
+  const pin = buildPinButton(a.inFocus, () => toggleActionFocus(a.id, !a.inFocus));
+  table.appendChild(el('div', { class: 'cell pin action-cell' }, [pin]));
+  table.appendChild(el('div', { class: 'cell action-cell' }));
+  table.appendChild(el('div', { class: 'cell action-cell' }));
+  const dept = a.department ? deptNameById(a.department) : null;
+  const children = [a.title];
+  if (dept) children.push(el('span', { class: 'dept-chip', text: dept }));
+  const titleCell = el('div', { class: 'cell action-outcome' + (a.status === 'complete' ? ' complete' : ''), onclick: () => openDrawer('action', a.id), role: 'button', tabindex: '0', onkeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDrawer('action', a.id); } } }, children);
+  table.appendChild(titleCell);
+  const ownerCell = a.owner ? el('div', { class: 'cell owner action-cell' }, [el('span', { class: 'initials', text: initials(a.owner) }), a.owner]) : el('div', { class: 'cell owner unassigned action-cell' }, [el('span', { class: 'initials', text: '?' }), 'Unassigned']);
+  const due = fmtDueTag(a.due);
+  const dueCell = el('div', { class: 'cell due action-cell' }, [el('span', { class: 'tag' + (due.cls ? ' ' + due.cls : ''), text: due.text })]);
+  table.appendChild(ownerCell); table.appendChild(dueCell);
+}
+
+function deptNameById(id) { const d = state.depts.find(x => x.id === id); return d ? d.name : null; }
+function buildPinButton(on, handler) {
+  return el('button', { class: 'pin-btn' + (on ? ' on' : ''), title: on ? 'Remove from Focus' : 'Pin to Focus', onclick: (e) => { e.stopPropagation(); handler(); } }, on ? '★' : '☆');
+}
+
+function renderFocus(stage) {
+  const items = allFocusItems();
+  const container = el('div', { class: 'focus-stage' });
+  container.appendChild(el('div', { class: 'focus-head' }, [
+    el('div', {}, [
+      el('h2', { text: 'Focus · what you can do right now' }),
+      el('div', { class: 'lede', text: items.length === 0 ? 'Nothing pinned yet — pin items with ☆ from This week.' : items.length + ' items to knock down' }),
+    ]),
+    document.body.classList.contains('tv') ? null : el('div', {}, [
+      el('button', { class: 'btn ghost sm', onclick: () => { document.body.classList.add('tv'); try { localStorage.setItem('pl.tv', '1'); } catch {} } }, 'ENTER TV MODE'),
+    ]),
+  ]));
+  if (items.length === 0) { stage.appendChild(container); return; }
+  const byOutcome = new Map(); const standalone = [];
+  items.forEach(item => {
+    if (item.outcomeId) { const arr = byOutcome.get(item.outcomeId) || []; arr.push(item); byOutcome.set(item.outcomeId, arr); }
+    else standalone.push(item);
+  });
+  for (const [outcomeId, acts] of byOutcome) {
+    const outcome = state.outcomes.find(o => o.id === outcomeId);
+    const goal = outcome ? state.goals.find(g => g.id === outcome.goalId) : null;
+    const group = el('div', { class: 'focus-group' });
+    group.appendChild(el('div', { class: 'focus-group-head' }, [goal ? el('span', { class: 'main', text: goal.title }) : null, el('span', { text: outcome ? outcome.title : '(unlinked)' })]));
+    acts.sort(sortByDue).forEach(a => group.appendChild(renderFocusAction(a)));
+    container.appendChild(group);
+  }
+  standalone.forEach(o => {
+    const goal = state.goals.find(g => g.id === o.goalId);
+    const group = el('div', { class: 'focus-group' });
+    group.appendChild(el('div', { class: 'focus-group-head' }, [goal ? el('span', { class: 'main', text: goal.title }) : null, el('span', { text: 'Contributing outcome' })]));
+    group.appendChild(renderFocusAction(o));
+    container.appendChild(group);
+  });
+  stage.appendChild(container);
+}
+function renderFocusAction(item) {
+  const complete = item.status === 'complete';
+  const check = el('button', { class: 'focus-check' + (complete ? ' on' : ''), title: complete ? 'Reopen' : 'Mark complete', onclick: () => complete ? reopenItem(item) : completeItem(item) }, complete ? '✓' : '');
+  const due = fmtDueTag(item.due);
+  const dept = item.department ? deptNameById(item.department) : '';
+  return el('div', { class: 'focus-action' }, [
+    el('div', { class: 'check' }, [check]),
+    el('div', { class: 'title' + (complete ? ' complete' : ''), onclick: () => openDrawer(item.outcomeId ? 'action' : 'outcome', item.id) }, item.title),
+    el('div', { class: 'owner' }, item.owner ? [el('span', { class: 'initials', text: initials(item.owner) }), item.owner] : [el('span', { class: 'initials', text: '?' }), 'Unassigned']),
+    el('div', { class: 'due' }, [el('span', { class: 'tag' + (due.cls ? ' ' + due.cls : ''), text: due.text })]),
+    el('div', { class: 'dept', text: dept }),
+  ]);
+}
+
+function renderDepts(stage) {
+  const container = el('div', { class: 'dept-section' });
+  container.appendChild(el('div', { class: 'dept-legend' }, [
+    el('span', {}, [el('b', { text: '○' }), 'Not started']),
+    el('span', {}, [el('b', { text: '◐' }), 'In progress']),
+    el('span', {}, [el('b', { text: '●' }), 'Complete']),
+    el('span', {}, 'Click a bubble to cycle. Change the bucket from the dropdown on each row.'),
+  ]));
+  const buckets = [{ key: 'progressing', label: 'Progressing' }, { key: 'behind', label: 'Behind' }, { key: 'at-risk', label: 'At-risk' }];
+  buckets.forEach(b => {
+    const rows = state.depts.filter(d => (d.bucket || 'progressing') === b.key).sort((x,y) => (x.order ?? 0) - (y.order ?? 0));
+    container.appendChild(el('div', { class: 'dept-bucket-head ' + b.key }, [el('h3', { text: b.label }), el('span', { class: 'count', text: rows.length + ' DEPT' + (rows.length === 1 ? '' : 'S') })]));
+    if (rows.length === 0) { container.appendChild(el('p', { style: 'color:var(--muted);font-size:12px;padding:4px 10px 10px;', text: 'None in this bucket.' })); return; }
+    container.appendChild(renderDeptTable(rows));
+  });
+  if (state.depts.length === 0) container.appendChild(el('div', { class: 'empty', style: 'border:1px solid var(--hair);' }, [el('h3', { text: 'No departments yet' })]));
+  stage.appendChild(container);
+}
+function renderDeptTable(rows) {
+  const t = el('div', { class: 'dept-table' });
+  t.appendChild(el('div', { class: 'th first', text: 'Department / division' }));
+  COL_LABELS.forEach(l => t.appendChild(el('div', { class: 'th', text: l })));
+  t.appendChild(el('div', { class: 'th last', text: 'Engagement notes' }));
+  t.appendChild(el('div', { class: 'th', text: 'Bucket' }));
+  let lastSub = null;
+  rows.forEach(d => {
+    if (d.subhead && d.subhead !== lastSub) { t.appendChild(el('div', { class: 'dept-cell subhead', text: d.subhead })); lastSub = d.subhead; }
+    t.appendChild(el('div', { class: 'dept-cell name', text: d.name }));
+    const cells = d.cells || {};
+    COLS.forEach(k => {
+      const s = (cells[k] ?? 0);
+      const glyph = s === 2 ? '●' : s === 1 ? '◐' : '○';
+      t.appendChild(el('div', { class: 'dept-cell bubble' }, [el('button', { class: 'bubble-btn', 'data-s': String(s), onclick: () => cycleDeptCell(d, k) }, glyph)]));
+    });
+    t.appendChild(el('div', { class: 'dept-cell notes' }, [el('input', { type: 'text', value: d.notes || '', placeholder: '—', onchange: (e) => updateDept(d.id, { notes: e.target.value }) })]));
+    t.appendChild(el('div', { class: 'dept-cell bucket-ctrl' }, [el('select', { onchange: (e) => updateDept(d.id, { bucket: e.target.value }) }, [
+      el('option', { value: 'progressing', selected: d.bucket === 'progressing' }, 'Progressing'),
+      el('option', { value: 'behind', selected: d.bucket === 'behind' }, 'Behind'),
+      el('option', { value: 'at-risk', selected: d.bucket === 'at-risk' }, 'At-risk'),
+    ])]));
+  });
+  return t;
+}
+
+function renderReview(stage) {
+  const lastIso = state.meta.lastGrantMeeting || null;
+  const since = lastIso ? new Date(lastIso).getTime() : 0;
+  const completedSinceOut = state.outcomes.filter(o => o.status === 'complete' && o.completedAt && new Date(o.completedAt).getTime() > since);
+  const completedSinceAct = state.actions.filter(a => a.status === 'complete' && a.completedAt && new Date(a.completedAt).getTime() > since);
+  const active = state.outcomes.filter(o => o.status !== 'complete');
+  const table = el('div', { class: 'table' });
+  buildHeader().forEach(h => table.appendChild(h));
+  table.appendChild(el('div', { class: 'band' }, [
+    el('div', {}, [el('span', { class: 'label', text: 'Shipped since last check-in' }), el('span', { class: 'label sub', text: lastIso ? 'since ' + shortDate(lastIso) : 'ever' })]),
+    el('button', { class: 'btn primary sm', onclick: markGrantReviewed }, 'Mark reviewed with Grant'),
+  ]));
+  if (completedSinceOut.length === 0 && completedSinceAct.length === 0) {
+    table.appendChild(el('div', { class: 'empty' }, [el('h3', { text: 'Nothing shipped since the last check-in' }), el('p', { text: 'Mark items complete as they close.' })]));
+  } else {
+    const byGoal = new Map();
+    completedSinceOut.forEach(o => { const arr = byGoal.get(o.goalId) || []; arr.push(o); byGoal.set(o.goalId, arr); });
+    [...state.goals].sort((a,b)=>(a.order??0)-(b.order??0)).forEach((g, idx) => { if (!byGoal.has(g.id)) return; byGoal.get(g.id).forEach((o, i) => appendOutcomeRow(table, g, o, i === 0, idx + 1)); });
+    completedSinceAct.forEach(a => appendActionRow(table, a));
+  }
+  table.appendChild(el('div', { class: 'band' }, [el('div', {}, [el('span', { class: 'label', text: 'Working toward' }), el('span', { class: 'label sub', text: active.length + ' open outcomes' })])]));
+  if (active.length === 0) table.appendChild(el('div', { class: 'empty' }, [el('h3', { text: 'Nothing open' })]));
+  else {
+    const byGoal = new Map();
+    active.forEach(o => { const arr = byGoal.get(o.goalId) || []; arr.push(o); byGoal.set(o.goalId, arr); });
+    [...state.goals].sort((a,b)=>(a.order??0)-(b.order??0)).forEach((g, idx) => { if (!byGoal.has(g.id)) return; byGoal.get(g.id).sort(sortByDue).forEach((o, i) => appendOutcomeRow(table, g, o, i === 0, idx + 1)); });
+  }
+  stage.appendChild(table);
+}
+
+function renderArchive(stage) {
+  const doneOut = state.outcomes.filter(o => o.status === 'complete');
+  const doneAct = state.actions.filter(a => a.status === 'complete');
+  const combined = [...doneOut.map(x => ({...x, _kind: 'outcome'})), ...doneAct.map(x => ({...x, _kind: 'action'}))].sort((a, b) => new Date(b.completedAt || 0) - new Date(a.completedAt || 0));
+  const table = el('div', { class: 'table' });
+  buildHeader().forEach(h => table.appendChild(h));
+  if (combined.length === 0) { table.appendChild(el('div', { class: 'empty' }, [el('h3', { text: 'Archive is empty' })])); stage.appendChild(table); return; }
+  const buckets = new Map();
+  combined.forEach(o => { const d = o.completedAt ? new Date(o.completedAt) : null; const key = d ? d.toLocaleDateString(undefined, { year: 'numeric', month: 'long' }).toUpperCase() : 'UNDATED'; const arr = buckets.get(key) || []; arr.push(o); buckets.set(key, arr); });
+  for (const [label, items] of buckets) {
+    table.appendChild(el('div', { class: 'band' }, [el('span', { class: 'label', text: label }), el('span', { class: 'label sub', text: items.length + ' item' + (items.length === 1 ? '' : 's') })]));
+    items.forEach(o => {
+      if (o._kind === 'outcome') { const g = state.goals.find(x => x.id === o.goalId) || { title: '—' }; appendOutcomeRowComplete(table, g, o); }
+      else appendActionRow(table, o);
+    });
+  }
+  stage.appendChild(table);
+}
+function appendOutcomeRowComplete(table, goal, o) {
+  table.appendChild(el('div', { class: 'cell pin stripe' }));
+  table.appendChild(el('div', { class: 'cell num stripe' }));
+  table.appendChild(el('div', { class: 'cell goal stripe', text: goal.title }));
+  table.appendChild(el('div', { class: 'cell outcome complete stripe', onclick: () => openDrawer('outcome', o.id) }, o.title));
+  const ownerCell = o.owner ? el('div', { class: 'cell owner stripe' }, [el('span', { class: 'initials', text: initials(o.owner) }), o.owner]) : el('div', { class: 'cell owner unassigned stripe' }, [el('span', { class: 'initials', text: '?' }), 'Unassigned']);
+  const dueCell = el('div', { class: 'cell due stripe' }, [el('span', { class: 'tag good', text: 'DONE ' + shortDate(o.completedAt).toUpperCase() })]);
+  table.appendChild(ownerCell); table.appendChild(dueCell);
+}
+
+// ===== Drawer =====
+function openDrawer(kind, id) { state.selected = { kind, id }; renderDrawer(); $('#drawer').classList.add('open'); $('#drawer').setAttribute('aria-hidden', 'false'); $('#scrim').classList.add('open'); }
+function closeDrawer() { state.selected = null; $('#drawer').classList.remove('open'); $('#drawer').setAttribute('aria-hidden', 'true'); $('#scrim').classList.remove('open'); }
+$('#scrim').addEventListener('click', closeDrawer);
+
+function renderDrawer() {
+  const sel = state.selected; if (!sel) return;
+  const item = sel.kind === 'outcome' ? state.outcomes.find(x => x.id === sel.id) : state.actions.find(x => x.id === sel.id);
+  const drawer = $('#drawer'); if (!item) { drawer.textContent = ''; return; }
+  const goal = sel.kind === 'outcome' ? state.goals.find(g => g.id === item.goalId) : (() => { const o = state.outcomes.find(o => o.id === item.outcomeId); return o ? state.goals.find(g => g.id === o.goalId) : null; })();
+  const parentOutcome = sel.kind === 'action' ? state.outcomes.find(o => o.id === item.outcomeId) : null;
+  const myLogs = state.logs.filter(l => (l.outcomeId === sel.id && sel.kind === 'outcome') || (l.actionId === sel.id && sel.kind === 'action')).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  drawer.textContent = '';
+  const eyebrowParts = [el('span', { class: 'ref', text: sel.kind === 'outcome' ? 'CONTRIBUTING OUTCOME' : 'ACTION' })];
+  if (goal) eyebrowParts.push(' · ', el('span', { text: goal.title }));
+  if (parentOutcome) eyebrowParts.push(' · ', el('span', { text: parentOutcome.title }));
+  drawer.appendChild(el('div', { class: 'drawer-head' }, [
+    el('button', { class: 'close', onclick: closeDrawer, 'aria-label': 'Close' }, '×'),
+    el('div', { class: 'drawer-eyebrow' }, eyebrowParts),
+    el('h3', { class: 'drawer-title', text: item.title }),
+  ]));
+  const titleInput = el('input', { type: 'text', value: item.title, onchange: (e) => { if (e.target.value.trim()) updateItem(sel.kind, item.id, { title: e.target.value.trim() }); } });
+  const ownerInput = el('input', { type: 'text', value: item.owner || '', list: 'peopleList', placeholder: 'Unassigned', onchange: (e) => updateItem(sel.kind, item.id, { owner: e.target.value.trim() }) });
+  const dueInput = el('input', { type: 'date', value: item.due || '', onchange: (e) => updateItem(sel.kind, item.id, { due: e.target.value || '' }) });
+  const parentCtrl = sel.kind === 'outcome'
+    ? el('select', { onchange: (e) => updateItem('outcome', item.id, { goalId: e.target.value }) }, [...state.goals].sort((a,b)=>(a.order??0)-(b.order??0)).map(g => el('option', { value: g.id, selected: g.id === item.goalId }, g.title)))
+    : el('select', { onchange: (e) => updateItem('action', item.id, { outcomeId: e.target.value }) }, [...state.outcomes].sort((a,b)=>(a.order??0)-(b.order??0)).map(o => el('option', { value: o.id, selected: o.id === item.outcomeId }, o.title)));
+  const pinBtn = el('button', { class: 'btn sm' + (item.inFocus ? ' primary' : ''), onclick: () => (sel.kind === 'outcome' ? toggleOutcomeFocus(item.id, !item.inFocus) : toggleActionFocus(item.id, !item.inFocus)) }, item.inFocus ? '★ IN FOCUS' : '☆ PIN TO FOCUS');
+  const metaChildren = [
+    el('dt', { text: sel.kind === 'outcome' ? 'Outcome' : 'Action' }), el('dd', {}, [titleInput]),
+    el('dt', { text: sel.kind === 'outcome' ? 'Main' : 'Contributing' }), el('dd', {}, [parentCtrl]),
+    el('dt', { text: 'Owner' }), el('dd', {}, [ownerInput]),
+    el('dt', { text: 'Due' }), el('dd', {}, [dueInput]),
+    el('dt', { text: 'Focus' }), el('dd', {}, [pinBtn]),
+  ];
+  if (sel.kind === 'action') {
+    const deptSel = el('select', { onchange: (e) => updateItem('action', item.id, { department: e.target.value || null }) }, [
+      el('option', { value: '', selected: !item.department }, '— none —'),
+      ...state.depts.sort((a,b) => (a.name||'').localeCompare(b.name||'')).map(d => el('option', { value: d.id, selected: d.id === item.department }, d.name)),
+    ]);
+    metaChildren.push(el('dt', { text: 'Dept' }), el('dd', {}, [deptSel]));
+  }
+  const statusPill = item.status === 'complete' ? el('span', { class: 'status-pill complete', text: 'Completed ' + shortDate(item.completedAt) }) : el('span', { class: 'status-pill active', text: 'Active' });
+  metaChildren.push(el('dt', { text: 'Status' }), el('dd', {}, [statusPill]));
+  drawer.appendChild(el('dl', { class: 'drawer-meta' }, metaChildren));
+  drawer.appendChild(el('div', { class: 'drawer-actions' }, [
+    item.status === 'complete' ? el('button', { class: 'btn', onclick: () => reopenItem(item) }, 'Reopen') : el('button', { class: 'btn primary', onclick: () => completeItem(item) }, 'Mark complete'),
+    renderDeleteButton(sel.kind, item.id),
+  ]));
+  if (sel.kind === 'outcome') {
+    const subs = state.actions.filter(a => a.outcomeId === item.id).sort(sortByDue);
+    const subWrap = el('div', { class: 'subitems' });
+    subWrap.appendChild(el('h4', { text: 'Actions · ' + subs.length }));
+    subs.forEach(a => {
+      subWrap.appendChild(el('div', { class: 'subitem' + (a.status === 'complete' ? ' complete' : '') }, [
+        el('div', { class: 'status' }, [el('button', { class: 'focus-check' + (a.status === 'complete' ? ' on' : ''), style: 'width:14px;height:14px;font-size:10px;', onclick: () => a.status === 'complete' ? reopenItem(a) : completeItem(a) }, a.status === 'complete' ? '✓' : '')]),
+        el('div', { class: 'title', onclick: () => openDrawer('action', a.id) }, a.title),
+        el('div', { class: 'owner-mini', text: a.owner || '—' }),
+        el('div', { class: 'due-mini', text: a.due ? a.due.slice(5).replace('-','/') : '' }),
+      ]));
+    });
+    const quickInput = el('input', { type: 'text', placeholder: 'Quick add action — press Enter' });
+    quickInput.addEventListener('keydown', async (e) => {
+      if (e.key === 'Enter' && quickInput.value.trim()) {
+        await addAction({ outcomeId: item.id, title: quickInput.value.trim(), owner: state.me.name || '', due: '', department: null, inFocus: true });
+        quickInput.value = '';
+      }
+    });
+    subWrap.appendChild(el('div', { class: 'add-subitem' }, [quickInput]));
+    drawer.appendChild(subWrap);
+  }
+  const logList = el('div', {});
+  if (myLogs.length === 0) logList.appendChild(el('div', { class: 'log system' }, [el('div', { class: 'what' }, [el('div', { class: 'body', text: 'No notes yet.' })])]));
+  else myLogs.forEach(l => logList.appendChild(renderLog(l)));
+  drawer.appendChild(el('div', { class: 'logs-section' }, [el('h4', { text: 'Log' }), logList]));
+  const ta = el('textarea', { placeholder: 'What did you do, or what are you about to do?' });
+  const submit = () => { const t = ta.value.trim(); if (!t) return; if (!state.me.name) { promptName('Set your name before posting a note.'); return; } addLog(sel.kind, sel.id, t); ta.value = ''; };
+  ta.addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') submit(); });
+  drawer.appendChild(el('div', { class: 'composer' }, [
+    ta,
+    el('div', { class: 'row-bottom' }, [el('span', { class: 'as', text: 'as ' + (state.me.name || 'anonymous') + ' · ⌘↵ to post' }), el('button', { class: 'btn primary sm', onclick: submit }, 'Post note')]),
+  ]));
+}
+
+function renderLog(l) {
+  const name = l.authorName || 'Someone';
+  return el('div', { class: 'log' + (l.kind === 'system' ? ' system' : '') }, [
+    el('span', { class: 'who', text: initials(name) }),
+    el('div', { class: 'what' }, [
+      el('div', { class: 'head' }, [el('span', {}, [el('b', { text: name })]), el('span', { text: fmtRelative(l.createdAt) })]),
+      el('div', { class: 'body', text: l.text }),
+    ]),
+  ]);
+}
+
+// ===== Writes =====
+async function updateItem(kind, id, patch) {
+  const table = kind === 'outcome' ? 'outcomes' : 'actions';
+  const payload = kind === 'outcome' ? mapOutcomeTo(patch) : mapActionTo(patch);
+  const { error } = await sb.from(table).update(payload).eq('id', id);
+  if (error) toast('Save failed: ' + error.message); else toast('Saved');
+}
+async function toggleOutcomeFocus(id, on) { await updateItem('outcome', id, { inFocus: !!on }); }
+async function toggleActionFocus(id, on) { await updateItem('action', id, { inFocus: !!on }); }
+async function completeItem(item) {
+  const kind = item.outcomeId ? 'action' : 'outcome';
+  const now = new Date().toISOString();
+  await updateItem(kind, item.id, { status: 'complete', completedAt: now, completedBy: state.me.id });
+  await addSystemLog(kind, item.id, (state.me.name || 'Someone') + ' marked this complete');
+  toast('Marked complete');
+}
+async function reopenItem(item) {
+  const kind = item.outcomeId ? 'action' : 'outcome';
+  await updateItem(kind, item.id, { status: 'active', completedAt: null, completedBy: null });
+  await addSystemLog(kind, item.id, (state.me.name || 'Someone') + ' reopened this');
+}
+async function deleteOutcome(kind, id) {
+  const table = kind === 'outcome' ? 'outcomes' : 'actions';
+  if (kind === 'outcome') {
+    const kids = state.actions.filter(a => a.outcomeId === id);
+    for (const a of kids) { await sb.from('actions').delete().eq('id', a.id); }
+  }
+  const col = kind === 'outcome' ? 'outcome_id' : 'action_id';
+  await sb.from('logs').delete().eq(col, id);
+  const { error } = await sb.from(table).delete().eq('id', id);
+  if (error) toast('Delete failed: ' + error.message); else { closeDrawer(); toast('Deleted'); }
+}
+function renderDeleteButton(kind, id) {
+  let armed = false, timer;
+  const btn = el('button', { class: 'btn danger ghost sm', title: 'Delete' }, 'Delete');
+  btn.onclick = () => {
+    if (!armed) { armed = true; btn.textContent = 'Confirm delete'; timer = setTimeout(() => { armed = false; btn.textContent = 'Delete'; }, 3500); }
+    else { clearTimeout(timer); deleteOutcome(kind, id); }
+  };
+  return btn;
+}
+async function addLog(kind, id, text) {
+  const body = { id: uuid(), author_id: state.me.id, author_name: state.me.name || '', body: text, kind: 'note', created_at: new Date().toISOString() };
+  if (kind === 'outcome') body.outcome_id = id; else body.action_id = id;
+  const { error } = await sb.from('logs').insert(body);
+  if (error) toast('Could not post: ' + error.message);
+}
+async function addSystemLog(kind, id, text) {
+  const body = { id: uuid(), author_id: state.me.id, author_name: state.me.name || '', body: text, kind: 'system', created_at: new Date().toISOString() };
+  if (kind === 'outcome') body.outcome_id = id; else body.action_id = id;
+  await sb.from('logs').insert(body);
+}
+async function markGrantReviewed() {
+  const { error } = await sb.from('meta').upsert({ id: 'state', last_grant_meeting: new Date().toISOString() });
+  if (error) toast('Save failed: ' + error.message); else toast('Logged check-in');
+}
+async function addAction(body) {
+  const existing = state.actions.filter(a => a.outcomeId === body.outcomeId).length;
+  const row = {
+    id: uuid(),
+    outcome_id: body.outcomeId, title: body.title, owner: body.owner || '', due: body.due || '',
+    status: 'active', order: existing, in_focus: !!body.inFocus,
+    department_id: body.department || null,
+    created_at: new Date().toISOString(), completed_at: null, completed_by: null,
+  };
+  const { error } = await sb.from('actions').insert(row);
+  if (error) toast('Add failed: ' + error.message); else toast('Added');
+}
+async function updateDept(id, patch) {
+  const { error } = await sb.from('depts').update(patch).eq('id', id);
+  if (error) toast('Save failed: ' + error.message);
+}
+async function cycleDeptCell(d, k) {
+  const cur = (d.cells && d.cells[k]) ?? 0;
+  const next = (cur + 1) % 3;
+  await updateDept(d.id, { cells: { ...(d.cells || {}), [k]: next } });
+}
+
+// ===== Dialogs =====
+function wireDialogs() {
+  const addOutcomeDlg = $('#addOutcomeDlg'), addGoalDlg = $('#addGoalDlg'), addActionDlg = $('#addActionDlg');
+  $('#addOutcomeBtn').onclick = () => {
+    const sel = $('#aoGoal'); sel.textContent = '';
+    [...state.goals].sort((a,b)=>(a.order??0)-(b.order??0)).forEach(g => sel.appendChild(el('option', { value: g.id }, g.title)));
+    $('#aoTitle').value = ''; $('#aoOwner').value = state.me.name || ''; $('#aoDue').value = '';
+    if (!state.goals.length) { toast('Add a main outcome first'); return; }
+    addOutcomeDlg.showModal();
+  };
+  $('#addOutcomeForm').addEventListener('submit', async (e) => {
+    if (e.submitter && e.submitter.value === 'cancel') return;
+    const goalId = $('#aoGoal').value, title = $('#aoTitle').value.trim(), owner = $('#aoOwner').value.trim(), due = $('#aoDue').value || '';
+    if (!title || !goalId) { e.preventDefault(); return; }
+    const existing = state.outcomes.filter(o => o.goalId === goalId).length;
+    const row = { id: uuid(), goal_id: goalId, title, owner, due, status: 'active', order: existing, in_focus: false, created_at: new Date().toISOString(), completed_at: null, completed_by: null };
+    const { error } = await sb.from('outcomes').insert(row);
+    if (error) toast('Add failed: ' + error.message); else toast('Added');
+  });
+  $('#addGoalBtn').onclick = () => { $('#agTitle').value = ''; addGoalDlg.showModal(); };
+  $('#addGoalForm').addEventListener('submit', async (e) => {
+    if (e.submitter && e.submitter.value === 'cancel') return;
+    const title = $('#agTitle').value.trim(); if (!title) { e.preventDefault(); return; }
+    const row = { id: uuid(), title, order: state.goals.length, created_at: new Date().toISOString() };
+    const { error } = await sb.from('goals').insert(row);
+    if (error) toast('Add failed: ' + error.message); else toast('Added');
+  });
+  $('#addActionBtn').onclick = () => openAddActionFor(null);
+  $('#addActionForm').addEventListener('submit', async (e) => {
+    if (e.submitter && e.submitter.value === 'cancel') return;
+    const outcomeId = $('#atOutcome').value, title = $('#atTitle').value.trim();
+    const owner = $('#atOwner').value.trim(), due = $('#atDue').value || '';
+    const department = $('#atDept').value || null, inFocus = $('#atFocus').value === '1';
+    if (!title || !outcomeId) { e.preventDefault(); return; }
+    await addAction({ outcomeId, title, owner, due, department, inFocus });
+  });
+}
+function openAddActionFor(outcomeId) {
+  const atOutcome = $('#atOutcome'); atOutcome.textContent = '';
+  [...state.outcomes].sort((a,b)=>(a.order??0)-(b.order??0)).forEach(o => atOutcome.appendChild(el('option', { value: o.id, selected: o.id === outcomeId }, o.title)));
+  const atDept = $('#atDept'); atDept.textContent = '';
+  atDept.appendChild(el('option', { value: '' }, '— none —'));
+  [...state.depts].sort((a,b) => (a.name||'').localeCompare(b.name||'')).forEach(d => atDept.appendChild(el('option', { value: d.id }, d.name)));
+  $('#atTitle').value = ''; $('#atOwner').value = state.me.name || ''; $('#atDue').value = ''; $('#atFocus').value = '1';
+  if (!state.outcomes.length) { toast('Add a contributing outcome first'); return; }
+  $('#addActionDlg').showModal();
+}
+
+let toastTimer;
+function toast(text) {
+  const n = $('#statusNote'); n.textContent = text; n.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => n.classList.remove('show'), 1800);
+}
+
+// Prompt for name on first visit if unset
+setTimeout(() => { if (!state.me.name) promptName('Welcome. Set your name so your notes are attributed.'); }, 600);
+</script>
+</body>
+</html>
