@@ -122,40 +122,20 @@ main { padding: 12px 0 80px; }
 .wk-row.a .wk-own .initials { width: 18px; height: 18px; font-size: 8.5px; }
 .wk-add { padding: 6px 0 8px 94px; font-size: 11px; border-top: 1px dotted var(--hair); }
 .wk-add a, .wk-gempty a { color: var(--ink-2); text-decoration: underline; cursor: pointer; }
+.wk-ref { font-family: var(--mono); font-weight: 700; font-size: 12px; color: var(--muted); padding-left: 14px; font-variant-numeric: tabular-nums; }
+.wk-row.a.flat .wk-t { padding-left: 26px; }
+.wk-row.a.done .wk-t::before { content: "✓"; background: var(--good); border-color: var(--good); color: #FFFFFF; font-size: 9px; line-height: 11px; text-align: center; font-weight: 700; }
+.wk-gstat .btn { margin-left: 4px; }
+.bucket-mark { display: inline-block; width: 12px; height: 12px; margin-right: 10px; vertical-align: 1px; background: var(--good); }
+.dept-bucket.behind .bucket-mark { background: var(--warn); }
+.dept-bucket.at-risk .bucket-mark { background: var(--accent); }
 .wk-gempty { color: var(--muted); font-size: 12px; padding: 10px 0 4px 68px; }
 
 
-.table { display: grid; grid-template-columns: 28px 26px minmax(220px, 2.2fr) minmax(0, 5fr) minmax(90px, auto) minmax(95px, auto); border: 1px solid var(--rule); background: var(--surface); }
-.th { background: var(--header-bg); color: var(--header-ink); font-weight: 700; font-size: 10px; line-height: 1; letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 10px; border-right: 1px solid rgba(255,255,255,0.08); }
-.th:last-child { border-right: 0; }
-.cell { padding: 10px 10px; border-top: 1px solid var(--hair); background: var(--surface); min-width: 0; font-size: 13px; }
-.cell.stripe { background: var(--stripe); }
-.row-group-start .cell { border-top: 2px solid var(--rule); }
-.cell.pin { padding: 8px 4px 8px 8px; text-align: center; }
 .pin-btn { appearance: none; background: transparent; border: 1px solid var(--hair-2); width: 20px; height: 20px; padding: 0; cursor: pointer; color: var(--muted); display: inline-grid; place-items: center; font-size: 13px; line-height: 1; }
 .pin-btn:hover { color: var(--ink); border-color: var(--ink); }
 .pin-btn.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .pin-btn.on:hover { background: var(--accent); filter: brightness(1.08); }
-.cell.num { font-family: var(--mono); font-weight: 700; font-size: 13px; color: var(--ink); font-variant-numeric: tabular-nums; padding-top: 11px; }
-.cell.goal { font-weight: 700; font-size: 13px; color: var(--ink); letter-spacing: 0.01em; padding-top: 11px; }
-.cell.outcome { font-weight: 600; font-size: 13px; color: var(--ink); cursor: pointer; position: relative; }
-.cell.outcome:hover { background: var(--stripe); }
-.cell.outcome.complete { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--hair-2); font-weight: 400; }
-.cell.outcome .notes-pip { display: inline-block; margin-left: 8px; padding: 1px 5px; font-family: var(--mono); font-weight: 700; font-size: 9px; background: var(--sunk); color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
-.cell.outcome .child-count { display: inline-block; margin-left: 8px; color: var(--muted); font-weight: 400; font-size: 11px; font-variant-numeric: tabular-nums; }
-.action-row.row-group-start .cell { border-top: 1px solid var(--hair); }
-.cell.action-outcome { padding-left: 24px; font-weight: 400; font-size: 12px; color: var(--ink-2); background: var(--stripe); cursor: pointer; border-top: 1px solid var(--hair); position: relative; }
-.cell.action-outcome:hover { background: var(--sunk); }
-.cell.action-outcome.complete { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--hair-2); }
-.cell.action-outcome::before { content: "└"; color: var(--hair-2); position: absolute; left: 10px; top: 10px; font-family: var(--mono); font-size: 11px; }
-.cell.action-empty { background: var(--stripe); border-top: 1px solid var(--hair); font-size: 11px; color: var(--muted); padding: 7px 10px 7px 24px; }
-.cell.action-empty a { color: var(--ink); text-decoration: underline; cursor: pointer; }
-.cell.action-cell { background: var(--stripe); border-top: 1px solid var(--hair); font-size: 12px; }
-.cell.owner { font-weight: 500; font-size: 12px; color: var(--ink); white-space: nowrap; }
-.cell.owner .initials { display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 7px; background: var(--sunk); color: var(--ink); font-weight: 700; font-size: 9px; border: 1px solid var(--hair-2); vertical-align: -5px; }
-.cell.owner.unassigned { color: var(--muted); }
-.cell.owner.unassigned .initials { background: transparent; border-style: dashed; color: var(--muted); }
-.cell.due { font-family: var(--mono); font-weight: 600; font-size: 11px; font-variant-numeric: tabular-nums; color: var(--ink); white-space: nowrap; letter-spacing: 0.02em; }
 .tag { display: inline-block; padding: 3px 0; font-family: var(--mono); font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; white-space: nowrap; color: var(--muted); }
 .tag.warn { color: var(--warn); font-weight: 700; }
 .tag.crit { color: var(--accent-ink); background: var(--accent); font-weight: 700; padding: 3px 7px; }
@@ -163,12 +143,6 @@ main { padding: 12px 0 80px; }
 .tag.unset { color: var(--hair-2); }
 .dept-chip { display: inline-block; margin-left: 8px; padding: 1px 6px; background: var(--sunk); color: var(--ink-2); font-family: var(--mono); font-weight: 600; font-size: 10px; letter-spacing: 0.02em; border: 1px solid var(--hair); text-transform: none; }
 
-.band { grid-column: 1 / -1; background: var(--header-bg); color: var(--header-ink); padding: 9px 12px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 2px solid var(--rule); }
-.band .label { font-weight: 700; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
-.band .label.sub, .band .label .sub { color: rgba(255,255,255,0.65); margin-left: 12px; font-weight: 500; letter-spacing: 0.06em; }
-.band .btn { background: transparent; color: var(--header-ink); border-color: rgba(255,255,255,0.4); }
-.band .btn:hover { background: rgba(255,255,255,0.1); }
-.band .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .empty { grid-column: 1 / -1; padding: 40px 20px; text-align: center; color: var(--muted); background: var(--stripe); border-top: 1px solid var(--hair); }
 .empty h3 { font-weight: 700; font-size: 11px; color: var(--ink); margin: 0 0 6px; letter-spacing: 0.08em; text-transform: uppercase; }
 .empty p { margin: 0; font-size: 12px; }
@@ -177,9 +151,9 @@ main { padding: 12px 0 80px; }
 .focus-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 8px 0 12px; border-bottom: 1px solid var(--hair); margin-bottom: 12px; }
 .focus-head h2 { font-size: 15px; font-weight: 700; margin: 0; letter-spacing: 0.04em; text-transform: uppercase; }
 .focus-head .lede { color: var(--muted); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; }
-.focus-group { border: 1px solid var(--rule); background: var(--surface); margin-bottom: 16px; }
-.focus-group-head { background: var(--header-bg); color: var(--header-ink); padding: 8px 12px; font-weight: 700; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
-.focus-group-head .main { color: rgba(255,255,255,0.6); margin-right: 10px; font-weight: 500; }
+.focus-group { border-top: 3px solid var(--rule); background: var(--surface); margin-bottom: 22px; }
+.focus-group-head { padding: 9px 0 9px; font-weight: 700; font-size: 16px; line-height: 1.25; color: var(--ink); display: flex; flex-direction: column; gap: 3px; }
+.focus-group-head .main { order: -1; color: var(--muted); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
 .focus-action { display: grid; grid-template-columns: 28px minmax(0, 1fr) minmax(90px, auto) minmax(95px, auto) minmax(90px, auto); gap: 0; align-items: center; padding: 0; border-top: 1px solid var(--hair); }
 .focus-action:first-of-type { border-top: 0; }
 .focus-action .check { padding: 0 8px; text-align: center; }
@@ -205,7 +179,8 @@ body.tv main { padding-top: 16px; }
 body.tv .focus-stage { padding-top: 0; }
 body.tv .focus-head h2 { font-size: 24px; }
 body.tv .focus-head .lede { font-size: 14px; }
-body.tv .focus-group-head { font-size: 14px; padding: 12px 16px; }
+body.tv .focus-group-head { font-size: 22px; padding: 12px 0; }
+body.tv .focus-group-head .main { font-size: 13px; }
 body.tv .focus-action .title { font-size: 22px; font-weight: 500; padding: 16px 14px; }
 body.tv .focus-action .owner { font-size: 18px; }
 body.tv .focus-action .owner .initials { width: 32px; height: 32px; font-size: 13px; }
@@ -218,19 +193,11 @@ body.tv .focus-action { grid-template-columns: 50px minmax(0, 1fr) minmax(130px,
 body.tv .exit-tv { position: fixed; top: max(16px, env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); z-index: 60; display: inline-flex; }
 .exit-tv { display: none; }
 
-.dept-section { margin-top: 18px; }
-.dept-bucket-head { display: flex; align-items: baseline; gap: 14px; padding: 10px 0 6px; }
-.dept-bucket-head h3 { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); padding-left: 10px; border-left: 4px solid var(--accent); }
-.dept-bucket-head.progressing h3 { border-color: var(--good); }
-.dept-bucket-head.behind h3 { border-color: var(--warn); }
-.dept-bucket-head.at-risk h3 { border-color: var(--accent); }
-.dept-bucket-head .count { color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
-.dept-table { display: grid; grid-template-columns: minmax(180px, 2fr) repeat(7, minmax(60px, 1fr)) minmax(180px, 2.5fr) 70px; border: 1px solid var(--rule); background: var(--surface); margin-bottom: 14px; }
-.dept-table .th { font-size: 9px; padding: 8px 6px; text-align: center; writing-mode: horizontal-tb; }
-.dept-table .th.first { text-align: left; padding-left: 10px; }
-.dept-table .th.last { text-align: left; padding-left: 10px; }
-.dept-cell { padding: 8px 10px; border-top: 1px solid var(--hair); background: var(--surface); font-size: 13px; min-width: 0; }
-.dept-cell.subhead { grid-column: 1 / -1; background: var(--sunk); color: var(--muted); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; padding: 6px 10px; border-top: 2px solid var(--rule); }
+.dept-table { display: grid; grid-template-columns: minmax(180px, 2fr) repeat(7, minmax(60px, 1fr)) minmax(180px, 2.5fr) 132px; background: var(--surface); }
+.dept-table .th { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 8px 6px 6px; text-align: center; line-height: 1.2; align-self: end; }
+.dept-table .th.first, .dept-table .th.last { text-align: left; padding-left: 0; }
+.dept-cell { padding: 8px 10px 8px 0; border-top: 1px solid var(--hair); background: var(--surface); font-size: 13px; min-width: 0; }
+.dept-cell.subhead { grid-column: 1 / -1; color: var(--muted); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; padding: 14px 0 6px; border-top: 1px solid var(--hair); }
 .dept-cell.name { font-weight: 700; font-size: 13px; }
 .dept-cell.notes { font-size: 12px; color: var(--ink-2); }
 .dept-cell.notes input { width: 100%; background: transparent; border: 0; border-bottom: 1px dashed transparent; font: inherit; color: inherit; padding: 2px 0; }
@@ -242,8 +209,9 @@ body.tv .exit-tv { position: fixed; top: max(16px, env(safe-area-inset-top, 0px)
 .bubble-btn[data-s="1"] { color: var(--warn); }
 .bubble-btn[data-s="2"] { color: var(--good); }
 .bubble-btn:hover { outline: 1px solid var(--ink); }
-.dept-legend { padding: 8px 0 12px; font-size: 11px; color: var(--muted); display: flex; gap: 18px; letter-spacing: 0.04em; }
-.dept-legend span b { color: var(--ink); font-weight: 700; margin-right: 4px; }
+.dept-legend { padding: 4px 0 14px; flex-wrap: wrap; font-size: 11px; color: var(--muted); display: flex; gap: 18px; letter-spacing: 0.04em; }
+.dept-legend span b { font-weight: 700; margin-right: 5px; font-size: 14px; vertical-align: -1px; cursor: default; }
+.dept-legend span b:hover { outline: 0; }
 
 .scrim { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); opacity: 0; pointer-events: none; transition: opacity 0.14s; z-index: 20; }
 .scrim.open { opacity: 1; pointer-events: auto; }
@@ -305,7 +273,6 @@ dialog.sheet .sheet-foot { padding: 10px 20px; border-top: 1px solid var(--hair)
 .conn { padding: 36px 20px; text-align: center; color: var(--muted); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; }
 
 @media (max-width: 760px) {
-  .table { grid-template-columns: 24px 24px minmax(140px, 1.6fr) minmax(0, 3fr) auto auto; }
   .kpis { flex-wrap: wrap; width: 100%; }
   .kpi { min-width: 0; flex: 1 1 30%; padding: 6px 10px; }
   .kpi .n { font-size: 20px; }
@@ -320,11 +287,15 @@ dialog.sheet .sheet-foot { padding: 10px 20px; border-top: 1px solid var(--hair)
   .wk-own .name { display: none; }
   .wk-add { padding-left: 34px; }
   .wk-gempty { padding-left: 40px; }
-  .cell.outcome { font-size: 12px; }
-  .dept-table { grid-template-columns: 1fr; }
-  .dept-table .th { display: none; }
-  .dept-table .th.first { display: block; }
-  .dept-cell { grid-column: 1 / -1; }
+  .dept-table { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .dept-table .th { font-size: 8px; padding: 6px 2px; letter-spacing: 0.04em; }
+  .dept-table .th.first { grid-column: 1 / -1; }
+  .dept-table .th.last, .dept-table .th.bucket-h { display: none; }
+  .dept-cell.name, .dept-cell.notes, .dept-cell.bucket-ctrl, .dept-cell.subhead { grid-column: 1 / -1; }
+  .dept-cell.name { padding-bottom: 2px; }
+  .dept-cell.bubble, .dept-cell.notes, .dept-cell.bucket-ctrl { border-top: 0; }
+  .dept-cell.bucket-ctrl { padding-bottom: 12px; }
+  .wk-ref { visibility: hidden; padding: 0; overflow: hidden; }
   .focus-action { grid-template-columns: 28px minmax(0, 1fr) auto; }
   .focus-action .owner, .focus-action .dept { display: none; }
 }
@@ -346,7 +317,7 @@ dialog.sheet .sheet-foot { padding: 10px 20px; border-top: 1px solid var(--hair)
       <div class="kpi"><div class="n" id="soonCount">0</div><div class="l">Due ≤ 3 days</div></div>
       <div class="kpi"><div class="n" id="focusCount">0</div><div class="l">In focus</div></div>
       <div class="kpi"><div class="n" id="activeCount">0</div><div class="l">Open outcomes</div></div>
-      <div class="kpi"><div class="n" id="countdown">—</div><div class="l" id="countdownLabel">Next Grant</div></div>
+      <div class="kpi"><div class="n" id="countdown">—</div><div class="l" id="countdownLabel">Next check-in</div></div>
     </div>
   </div>
   <div class="toolbar">
@@ -354,7 +325,7 @@ dialog.sheet .sheet-foot { padding: 10px 20px; border-top: 1px solid var(--hair)
       <button class="tab" role="tab" data-view="week" aria-current="true">This week</button>
       <button class="tab" role="tab" data-view="focus">Focus</button>
       <button class="tab" role="tab" data-view="depts">Departments</button>
-      <button class="tab" role="tab" data-view="review">Grant review</button>
+      <button class="tab" role="tab" data-view="review">Check-In Review</button>
       <button class="tab" role="tab" data-view="archive">Archive</button>
     </div>
     <div class="toolbar-right">
@@ -638,7 +609,7 @@ function render() {
   const countdown = $('#countdown'); countdown.textContent = '';
   if (next.target) {
     countdown.append(next.target.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(), el('small', { text: String(next.target.getMonth() + 1).padStart(2, '0') + '/' + String(next.target.getDate()).padStart(2, '0') }));
-    $('#countdownLabel').textContent = 'Next Grant · ' + next.label.toLowerCase();
+    $('#countdownLabel').textContent = 'Next check-in · ' + next.label.toLowerCase();
   } else countdown.textContent = next.label;
   const stage = $('#stage'); stage.textContent = '';
   if (state.view === 'focus') renderFocus(stage);
@@ -677,16 +648,6 @@ function sortByDue(a, b) {
   return (a.order ?? 0) - (b.order ?? 0);
 }
 
-function buildHeader() {
-  return [
-    el('div', { class: 'th', title: 'Pin to Focus' }, '★'),
-    el('div', { class: 'th', text: '#' }),
-    el('div', { class: 'th', text: 'Main outcome' }),
-    el('div', { class: 'th', text: 'Contributing outcomes & actions' }),
-    el('div', { class: 'th', text: 'Owner' }),
-    el('div', { class: 'th', text: 'Due' }),
-  ];
-}
 
 function urgencyClass(due) { const d = daysUntil(due); return d === null ? '' : d <= 0 ? ' u-crit' : d <= 3 ? ' u-warn' : ''; }
 function wkOwner(name) {
@@ -754,39 +715,7 @@ function renderWeek(stage) {
   });
 }
 
-function appendOutcomeRow(table, goal, o, isFirstInGroup, goalIdx) {
-  const rowClass = isFirstInGroup ? ' row-group-start' : '';
-  const logCount = state.logs.filter(l => l.outcomeId === o.id && l.kind !== 'system').length;
-  const actCount = state.actions.filter(a => a.outcomeId === o.id).length;
-  const pin = buildPinButton(o.inFocus, () => toggleOutcomeFocus(o.id, !o.inFocus));
-  table.appendChild(el('div', { class: 'cell pin' + rowClass }, [pin]));
-  table.appendChild(el('div', { class: 'cell num' + rowClass, text: isFirstInGroup ? String(goalIdx) : '' }));
-  table.appendChild(el('div', { class: 'cell goal' + rowClass, text: isFirstInGroup ? goal.title : '' }));
-  const outcomeChildren = [o.title];
-  if (actCount > 0) outcomeChildren.push(el('span', { class: 'child-count', text: '· ' + actCount + ' action' + (actCount === 1 ? '' : 's') }));
-  if (logCount > 0) outcomeChildren.push(el('span', { class: 'notes-pip', text: logCount + (logCount === 1 ? ' note' : ' notes') }));
-  table.appendChild(el('div', { class: 'cell outcome' + rowClass, onclick: () => openDrawer('outcome', o.id), role: 'button', tabindex: '0', onkeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDrawer('outcome', o.id); } } }, outcomeChildren));
-  const ownerCell = o.owner ? el('div', { class: 'cell owner' + rowClass }, [el('span', { class: 'initials', text: initials(o.owner) }), o.owner]) : el('div', { class: 'cell owner unassigned' + rowClass }, [el('span', { class: 'initials', text: '?' }), 'Unassigned']);
-  const due = fmtDueTag(o.due);
-  const dueCell = el('div', { class: 'cell due' + rowClass }, [el('span', { class: 'tag' + (due.cls ? ' ' + due.cls : ''), text: due.text })]);
-  table.appendChild(ownerCell); table.appendChild(dueCell);
-}
 
-function appendActionRow(table, a) {
-  const pin = buildPinButton(a.inFocus, () => toggleActionFocus(a.id, !a.inFocus));
-  table.appendChild(el('div', { class: 'cell pin action-cell' }, [pin]));
-  table.appendChild(el('div', { class: 'cell action-cell' }));
-  table.appendChild(el('div', { class: 'cell action-cell' }));
-  const dept = a.department ? deptNameById(a.department) : null;
-  const children = [a.title];
-  if (dept) children.push(el('span', { class: 'dept-chip', text: dept }));
-  const titleCell = el('div', { class: 'cell action-outcome' + (a.status === 'complete' ? ' complete' : ''), onclick: () => openDrawer('action', a.id), role: 'button', tabindex: '0', onkeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDrawer('action', a.id); } } }, children);
-  table.appendChild(titleCell);
-  const ownerCell = a.owner ? el('div', { class: 'cell owner action-cell' }, [el('span', { class: 'initials', text: initials(a.owner) }), a.owner]) : el('div', { class: 'cell owner unassigned action-cell' }, [el('span', { class: 'initials', text: '?' }), 'Unassigned']);
-  const due = fmtDueTag(a.due);
-  const dueCell = el('div', { class: 'cell due action-cell' }, [el('span', { class: 'tag' + (due.cls ? ' ' + due.cls : ''), text: due.text })]);
-  table.appendChild(ownerCell); table.appendChild(dueCell);
-}
 
 function deptNameById(id) { const d = state.depts.find(x => x.id === id); return d ? d.name : null; }
 function buildPinButton(on, handler) {
@@ -842,30 +771,69 @@ function renderFocusAction(item) {
   ]);
 }
 
+const BUCKETS = [{ key: 'progressing', label: 'Progressing' }, { key: 'behind', label: 'Behind' }, { key: 'at-risk', label: 'At-risk' }];
+function sectionHead(num, title, statKids) {
+  return el('div', { class: 'wk-ghead' }, [
+    el('div', { class: 'wk-gnum', text: String(num).padStart(2, '0') }),
+    el('div', { class: 'wk-gtitle' }, title),
+    el('div', { class: 'wk-gstat' }, statKids || []),
+  ]);
+}
+function goalRef(goalId) {
+  const goals = [...state.goals].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const i = goals.findIndex(g => g.id === goalId);
+  return el('div', { class: 'wk-ref', title: i >= 0 ? goals[i].title : '', text: i >= 0 ? String(i + 1).padStart(2, '0') : '—' });
+}
+function goalIdOf(item) {
+  if (item.goalId) return item.goalId;
+  const o = state.outcomes.find(x => x.id === item.outcomeId);
+  return o ? o.goalId : null;
+}
+function doneTag(item) { return el('div', { class: 'wk-due' }, [el('span', { class: 'tag good', text: 'DONE ' + (item.completedAt ? shortDate(item.completedAt).toUpperCase() : '') })]); }
+function itemRow(item, kind, opts = {}) {
+  const isAction = kind === 'action';
+  const kids = [item.title];
+  if (isAction && item.department) { const d = deptNameById(item.department); if (d) kids.push(el('span', { class: 'dept-chip', text: d })); }
+  if (opts.meta) kids.push(el('span', { class: 'meta', text: opts.meta }));
+  return el('div', { class: 'wk-row ' + (isAction ? 'a flat' : 'o') + (opts.done ? ' done' : '') + (opts.urgent ? urgencyClass(item.due) : '') }, [
+    goalRef(goalIdOf(item)),
+    wkTitle(kind, item.id, kids),
+    wkOwner(item.owner),
+    opts.done ? doneTag(item) : wkDue(item.due),
+    el('div', { class: 'wk-pin' }, opts.done ? [] : [buildPinButton(item.inFocus, () => (isAction ? toggleActionFocus : toggleOutcomeFocus)(item.id, !item.inFocus))]),
+  ]);
+}
+function colsHead(first, dueLabel) {
+  return el('div', { class: 'wk-cols' }, [el('div', { text: first }), el('div', { text: 'Outcome / action' }), el('div', { text: 'Owner' }), el('div', { class: 'r', text: dueLabel }), el('div')]);
+}
+
 function renderDepts(stage) {
-  const container = el('div', { class: 'dept-section' });
-  container.appendChild(el('div', { class: 'dept-legend' }, [
-    el('span', {}, [el('b', { text: '○' }), 'Not started']),
-    el('span', {}, [el('b', { text: '◐' }), 'In progress']),
-    el('span', {}, [el('b', { text: '●' }), 'Complete']),
-    el('span', {}, 'Click a bubble to cycle. Change the bucket from the dropdown on each row.'),
+  stage.appendChild(el('div', { class: 'dept-legend' }, [
+    el('span', {}, [el('b', { class: 'bubble-btn', 'data-s': '0', text: '○' }), 'Not started']),
+    el('span', {}, [el('b', { class: 'bubble-btn', 'data-s': '1', text: '◐' }), 'In progress']),
+    el('span', {}, [el('b', { class: 'bubble-btn', 'data-s': '2', text: '●' }), 'Complete']),
+    el('span', {}, 'Click a bubble to cycle it. Change the bucket from the dropdown on each row.'),
   ]));
-  const buckets = [{ key: 'progressing', label: 'Progressing' }, { key: 'behind', label: 'Behind' }, { key: 'at-risk', label: 'At-risk' }];
-  buckets.forEach(b => {
-    const rows = state.depts.filter(d => (d.bucket || 'progressing') === b.key).sort((x,y) => (x.order ?? 0) - (y.order ?? 0));
-    container.appendChild(el('div', { class: 'dept-bucket-head ' + b.key }, [el('h3', { text: b.label }), el('span', { class: 'count', text: rows.length + ' DEPT' + (rows.length === 1 ? '' : 'S') })]));
-    if (rows.length === 0) { container.appendChild(el('p', { style: 'color:var(--muted);font-size:12px;padding:4px 10px 10px;', text: 'None in this bucket.' })); return; }
-    container.appendChild(renderDeptTable(rows));
+  if (state.depts.length === 0) { stage.appendChild(el('div', { class: 'empty', style: 'border:1px solid var(--hair);' }, [el('h3', { text: 'No departments yet' })])); return; }
+  BUCKETS.forEach(b => {
+    const rows = state.depts.filter(d => (d.bucket || 'progressing') === b.key).sort((x, y) => (x.order ?? 0) - (y.order ?? 0));
+    const done = rows.reduce((n, d) => n + COLS.filter(k => (d.cells || {})[k] === 2).length, 0);
+    const sec = el('section', { class: 'wk-goal dept-bucket ' + b.key });
+    sec.appendChild(sectionHead(rows.length, [el('span', { class: 'bucket-mark' }), b.label], [
+      el('span', { text: rows.length + ' dept' + (rows.length === 1 ? '' : 's') }),
+      rows.length ? el('span', { text: done + ' of ' + rows.length * COLS.length + ' steps complete' }) : null,
+    ]));
+    if (rows.length === 0) sec.appendChild(el('div', { class: 'wk-gempty', text: 'None in this bucket.' }));
+    else sec.appendChild(renderDeptTable(rows));
+    stage.appendChild(sec);
   });
-  if (state.depts.length === 0) container.appendChild(el('div', { class: 'empty', style: 'border:1px solid var(--hair);' }, [el('h3', { text: 'No departments yet' })]));
-  stage.appendChild(container);
 }
 function renderDeptTable(rows) {
   const t = el('div', { class: 'dept-table' });
   t.appendChild(el('div', { class: 'th first', text: 'Department / division' }));
   COL_LABELS.forEach(l => t.appendChild(el('div', { class: 'th', text: l })));
   t.appendChild(el('div', { class: 'th last', text: 'Engagement notes' }));
-  t.appendChild(el('div', { class: 'th', text: 'Bucket' }));
+  t.appendChild(el('div', { class: 'th bucket-h', text: 'Bucket' }));
   let lastSub = null;
   rows.forEach(d => {
     if (d.subhead && d.subhead !== lastSub) { t.appendChild(el('div', { class: 'dept-cell subhead', text: d.subhead })); lastSub = d.subhead; }
@@ -877,11 +845,8 @@ function renderDeptTable(rows) {
       t.appendChild(el('div', { class: 'dept-cell bubble' }, [el('button', { class: 'bubble-btn', 'data-s': String(s), onclick: () => cycleDeptCell(d, k) }, glyph)]));
     });
     t.appendChild(el('div', { class: 'dept-cell notes' }, [el('input', { type: 'text', value: d.notes || '', placeholder: '—', onchange: (e) => updateDept(d.id, { notes: e.target.value }) })]));
-    t.appendChild(el('div', { class: 'dept-cell bucket-ctrl' }, [el('select', { onchange: (e) => updateDept(d.id, { bucket: e.target.value }) }, [
-      el('option', { value: 'progressing', selected: d.bucket === 'progressing' }, 'Progressing'),
-      el('option', { value: 'behind', selected: d.bucket === 'behind' }, 'Behind'),
-      el('option', { value: 'at-risk', selected: d.bucket === 'at-risk' }, 'At-risk'),
-    ])]));
+    t.appendChild(el('div', { class: 'dept-cell bucket-ctrl' }, [el('select', { onchange: (e) => updateDept(d.id, { bucket: e.target.value }) },
+      BUCKETS.map(x => el('option', { value: x.key, selected: d.bucket === x.key }, x.label)))]));
   });
   return t;
 }
@@ -889,59 +854,56 @@ function renderDeptTable(rows) {
 function renderReview(stage) {
   const lastIso = state.meta.lastGrantMeeting || null;
   const since = lastIso ? new Date(lastIso).getTime() : 0;
-  const completedSinceOut = state.outcomes.filter(o => o.status === 'complete' && o.completedAt && new Date(o.completedAt).getTime() > since);
-  const completedSinceAct = state.actions.filter(a => a.status === 'complete' && a.completedAt && new Date(a.completedAt).getTime() > since);
-  const active = state.outcomes.filter(o => o.status !== 'complete');
-  const table = el('div', { class: 'table' });
-  buildHeader().forEach(h => table.appendChild(h));
-  table.appendChild(el('div', { class: 'band' }, [
-    el('div', {}, [el('span', { class: 'label', text: 'Shipped since last check-in' }), el('span', { class: 'label sub', text: lastIso ? 'since ' + shortDate(lastIso) : 'ever' })]),
-    el('button', { class: 'btn primary sm', onclick: markGrantReviewed }, 'Mark reviewed with Grant'),
+  const shippedOut = state.outcomes.filter(o => o.status === 'complete' && o.completedAt && new Date(o.completedAt).getTime() > since);
+  const shippedAct = state.actions.filter(a => a.status === 'complete' && a.completedAt && new Date(a.completedAt).getTime() > since);
+  const shipped = shippedOut.length + shippedAct.length;
+  const order = (x) => { const g = state.goals.find(g => g.id === goalIdOf(x)); return g ? (g.order ?? 0) : 999; };
+  const byGoalThenDue = (a, b) => (order(a) - order(b)) || sortByDue(a, b);
+
+  const s1 = el('section', { class: 'wk-goal' });
+  s1.appendChild(sectionHead(shipped, 'Shipped since last check-in', [
+    el('span', { text: lastIso ? 'since ' + shortDate(lastIso) : 'since the start' }),
+    el('button', { class: 'btn primary sm', onclick: markGrantReviewed }, 'Mark check-in reviewed'),
   ]));
-  if (completedSinceOut.length === 0 && completedSinceAct.length === 0) {
-    table.appendChild(el('div', { class: 'empty' }, [el('h3', { text: 'Nothing shipped since the last check-in' }), el('p', { text: 'Mark items complete as they close.' })]));
-  } else {
-    const byGoal = new Map();
-    completedSinceOut.forEach(o => { const arr = byGoal.get(o.goalId) || []; arr.push(o); byGoal.set(o.goalId, arr); });
-    [...state.goals].sort((a,b)=>(a.order??0)-(b.order??0)).forEach((g, idx) => { if (!byGoal.has(g.id)) return; byGoal.get(g.id).forEach((o, i) => appendOutcomeRow(table, g, o, i === 0, idx + 1)); });
-    completedSinceAct.forEach(a => appendActionRow(table, a));
-  }
-  table.appendChild(el('div', { class: 'band' }, [el('div', {}, [el('span', { class: 'label', text: 'Working toward' }), el('span', { class: 'label sub', text: active.length + ' open outcomes' })])]));
-  if (active.length === 0) table.appendChild(el('div', { class: 'empty' }, [el('h3', { text: 'Nothing open' })]));
+  if (shipped === 0) s1.appendChild(el('div', { class: 'wk-gempty', text: 'Nothing shipped since the last check-in. Mark items complete as they close.' }));
   else {
-    const byGoal = new Map();
-    active.forEach(o => { const arr = byGoal.get(o.goalId) || []; arr.push(o); byGoal.set(o.goalId, arr); });
-    [...state.goals].sort((a,b)=>(a.order??0)-(b.order??0)).forEach((g, idx) => { if (!byGoal.has(g.id)) return; byGoal.get(g.id).sort(sortByDue).forEach((o, i) => appendOutcomeRow(table, g, o, i === 0, idx + 1)); });
+    s1.appendChild(colsHead('Main', 'Completed'));
+    shippedOut.sort(byGoalThenDue).forEach(o => s1.appendChild(itemRow(o, 'outcome', { done: true })));
+    shippedAct.sort(byGoalThenDue).forEach(a => s1.appendChild(itemRow(a, 'action', { done: true })));
   }
-  stage.appendChild(table);
+  stage.appendChild(s1);
+
+  const active = state.outcomes.filter(o => o.status !== 'complete').sort(byGoalThenDue);
+  const late = active.filter(o => { const d = daysUntil(o.due); return d !== null && d < 0; }).length;
+  const s2 = el('section', { class: 'wk-goal' });
+  s2.appendChild(sectionHead(active.length, 'Still open', [late ? el('span', { class: 'late', text: late + ' overdue' }) : null, el('span', { text: 'sorted by main outcome, then due' })]));
+  if (active.length === 0) s2.appendChild(el('div', { class: 'wk-gempty', text: 'Nothing open.' }));
+  else {
+    s2.appendChild(colsHead('Main', 'Due'));
+    active.forEach(o => {
+      const n = state.actions.filter(a => a.outcomeId === o.id && a.status !== 'complete').length;
+      s2.appendChild(itemRow(o, 'outcome', { urgent: true, meta: n ? n + ' open action' + (n === 1 ? '' : 's') : '' }));
+    });
+  }
+  stage.appendChild(s2);
 }
 
 function renderArchive(stage) {
-  const doneOut = state.outcomes.filter(o => o.status === 'complete');
-  const doneAct = state.actions.filter(a => a.status === 'complete');
-  const combined = [...doneOut.map(x => ({...x, _kind: 'outcome'})), ...doneAct.map(x => ({...x, _kind: 'action'}))].sort((a, b) => new Date(b.completedAt || 0) - new Date(a.completedAt || 0));
-  const table = el('div', { class: 'table' });
-  buildHeader().forEach(h => table.appendChild(h));
-  if (combined.length === 0) { table.appendChild(el('div', { class: 'empty' }, [el('h3', { text: 'Archive is empty' })])); stage.appendChild(table); return; }
+  const combined = [
+    ...state.outcomes.filter(o => o.status === 'complete').map(x => ({ item: x, kind: 'outcome' })),
+    ...state.actions.filter(a => a.status === 'complete').map(x => ({ item: x, kind: 'action' })),
+  ].sort((a, b) => new Date(b.item.completedAt || 0) - new Date(a.item.completedAt || 0));
+  if (combined.length === 0) { stage.appendChild(el('div', { class: 'empty', style: 'border:1px solid var(--hair);' }, [el('h3', { text: 'Archive is empty' })])); return; }
   const buckets = new Map();
-  combined.forEach(o => { const d = o.completedAt ? new Date(o.completedAt) : null; const key = d ? d.toLocaleDateString(undefined, { year: 'numeric', month: 'long' }).toUpperCase() : 'UNDATED'; const arr = buckets.get(key) || []; arr.push(o); buckets.set(key, arr); });
+  combined.forEach(x => { const d = x.item.completedAt ? new Date(x.item.completedAt) : null; const key = d ? d.toLocaleDateString(undefined, { year: 'numeric', month: 'long' }) : 'Undated'; const arr = buckets.get(key) || []; arr.push(x); buckets.set(key, arr); });
   for (const [label, items] of buckets) {
-    table.appendChild(el('div', { class: 'band' }, [el('span', { class: 'label', text: label }), el('span', { class: 'label sub', text: items.length + ' item' + (items.length === 1 ? '' : 's') })]));
-    items.forEach(o => {
-      if (o._kind === 'outcome') { const g = state.goals.find(x => x.id === o.goalId) || { title: '—' }; appendOutcomeRowComplete(table, g, o); }
-      else appendActionRow(table, o);
-    });
+    const outs = items.filter(x => x.kind === 'outcome').length;
+    const sec = el('section', { class: 'wk-goal' });
+    sec.appendChild(sectionHead(items.length, label, [el('span', { text: outs + ' outcome' + (outs === 1 ? '' : 's') + ' · ' + (items.length - outs) + ' action' + (items.length - outs === 1 ? '' : 's') })]));
+    sec.appendChild(colsHead('Main', 'Completed'));
+    items.forEach(x => sec.appendChild(itemRow(x.item, x.kind, { done: true })));
+    stage.appendChild(sec);
   }
-  stage.appendChild(table);
-}
-function appendOutcomeRowComplete(table, goal, o) {
-  table.appendChild(el('div', { class: 'cell pin stripe' }));
-  table.appendChild(el('div', { class: 'cell num stripe' }));
-  table.appendChild(el('div', { class: 'cell goal stripe', text: goal.title }));
-  table.appendChild(el('div', { class: 'cell outcome complete stripe', onclick: () => openDrawer('outcome', o.id) }, o.title));
-  const ownerCell = o.owner ? el('div', { class: 'cell owner stripe' }, [el('span', { class: 'initials', text: initials(o.owner) }), o.owner]) : el('div', { class: 'cell owner unassigned stripe' }, [el('span', { class: 'initials', text: '?' }), 'Unassigned']);
-  const dueCell = el('div', { class: 'cell due stripe' }, [el('span', { class: 'tag good', text: 'DONE ' + shortDate(o.completedAt).toUpperCase() })]);
-  table.appendChild(ownerCell); table.appendChild(dueCell);
 }
 
 // ===== Drawer =====
