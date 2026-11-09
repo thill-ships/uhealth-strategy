@@ -51,21 +51,27 @@ img { max-width: 100%; }
 button { font-family: inherit; }
 
 .masthead { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); padding-top: 14px; border-bottom: 3px solid var(--accent); }
-.kicker { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding-bottom: 8px; }
+.kicker { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding-bottom: 12px; }
 .title { font-family: var(--body); font-weight: 700; font-size: clamp(18px, 2.2vw, 24px); letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink); margin: 0; display: flex; align-items: center; gap: 10px; }
 .title .bar { display: inline-block; width: 8px; height: 20px; background: var(--accent); }
-.meta-row { display: flex; align-items: baseline; gap: 18px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 700; flex-wrap: wrap; }
+.meta-row { display: flex; align-items: baseline; gap: 10px; margin-top: 6px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 700; flex-wrap: wrap; }
 .meta-row .sep { color: var(--hair-2); }
 .meta-row b { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
-.meta-row .crit { color: var(--accent); }
+.kpis { display: flex; border: 1px solid var(--rule); background: var(--surface); }
+.kpi { padding: 7px 16px 8px; border-left: 1px solid var(--hair); min-width: 104px; }
+.kpi:first-child { border-left: 0; }
+.kpi .n { font-family: var(--mono); font-weight: 700; font-size: 26px; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.kpi .n small { font-size: 12px; letter-spacing: 0.04em; margin-left: 4px; }
+.kpi .l { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 5px; white-space: nowrap; }
+.kpi.crit { background: var(--accent); color: var(--accent-ink); }
+.kpi.crit .l { color: rgba(255,255,255,0.82); }
 .meta-row .me { color: var(--ink); cursor: pointer; text-decoration: underline dotted; }
 
-.toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0 10px; flex-wrap: wrap; border-bottom: 1px solid var(--hair); }
-.tabs { display: flex; gap: 0; flex-wrap: wrap; }
-.tab { appearance: none; background: var(--surface); color: var(--ink-2); border: 1px solid var(--hair-2); border-left-width: 0; font-weight: 700; font-size: 10px; line-height: 1; letter-spacing: 0.08em; text-transform: uppercase; padding: 9px 14px; cursor: pointer; }
-.tab:first-child { border-left-width: 1px; }
-.tab:hover { background: var(--stripe); }
-.tab[aria-current="true"] { background: var(--header-bg); color: var(--header-ink); border-color: var(--header-bg); }
+.toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 0 8px; flex-wrap: wrap; }
+.tabs { display: flex; gap: 2px 24px; flex-wrap: wrap; }
+.tab { appearance: none; background: transparent; color: var(--muted); border: 0; border-bottom: 3px solid transparent; font-weight: 700; font-size: 11px; line-height: 1; letter-spacing: 0.1em; text-transform: uppercase; padding: 8px 0 7px; cursor: pointer; }
+.tab:hover { color: var(--ink); }
+.tab[aria-current="true"] { color: var(--ink); border-bottom-color: var(--ink); }
 .toolbar-right { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
 .btn { appearance: none; background: var(--surface); color: var(--ink); border: 1px solid var(--hair-2); padding: 6px 12px; font-weight: 700; font-size: 10px; line-height: 1; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; }
 .btn:hover { background: var(--stripe); }
@@ -79,6 +85,45 @@ button { font-family: inherit; }
 .btn.danger { color: var(--crit); border-color: var(--crit); }
 
 main { padding: 12px 0 80px; }
+
+/* This week: outcome blocks */
+.wk-cols, .wk-row { display: grid; grid-template-columns: 54px minmax(0, 1fr) 150px 140px 30px; gap: 0 14px; align-items: center; }
+.wk-cols { padding: 8px 0 6px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.wk-cols .r { text-align: right; }
+.wk-goal { margin-bottom: 26px; }
+.wk-ghead { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; gap: 0 14px; align-items: end; border-top: 3px solid var(--rule); padding: 10px 0; }
+.wk-gnum { font-family: var(--mono); font-weight: 700; font-size: 30px; line-height: 1; font-variant-numeric: tabular-nums; }
+.wk-gtitle { font-size: 19px; font-weight: 700; line-height: 1.2; }
+.wk-gstat { display: flex; align-items: center; gap: 14px; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.wk-gstat .late { color: var(--accent); }
+.wk-segs { display: flex; gap: 2px; }
+.wk-seg { width: 16px; height: 8px; background: var(--sunk); border: 1px solid var(--hair-2); }
+.wk-seg.on { background: var(--ink); border-color: var(--ink); }
+.wk-row { border-top: 1px solid var(--hair); min-height: 44px; position: relative; }
+.wk-row.o::before { content: ""; position: absolute; left: 0; top: -1px; bottom: 0; width: 4px; }
+.wk-row.o.u-crit::before { background: var(--accent); }
+.wk-row.o.u-warn::before { background: var(--warn); }
+.wk-t { font-size: 15px; font-weight: 700; padding: 11px 0; cursor: pointer; min-width: 0; }
+.wk-t:hover { text-decoration: underline; text-decoration-color: var(--hair-2); text-underline-offset: 3px; }
+.wk-t .meta { font-size: 11px; font-weight: 400; color: var(--muted); margin-left: 10px; }
+.wk-own { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-2); min-width: 0; white-space: nowrap; }
+.wk-own .initials { display: inline-grid; place-items: center; flex: 0 0 auto; width: 22px; height: 22px; background: var(--sunk); border: 1px solid var(--hair-2); font-weight: 700; font-size: 9.5px; color: var(--ink); }
+.wk-own.unassigned { color: var(--muted); }
+.wk-own.unassigned .initials { background: transparent; border-style: dashed; }
+.wk-due { text-align: right; font-size: 11px; }
+.wk-pin { text-align: center; }
+.wk-pin .pin-btn { border: 0; width: 24px; height: 24px; font-size: 15px; color: var(--hair-2); background: transparent; }
+.wk-pin .pin-btn:hover { color: var(--ink); }
+.wk-pin .pin-btn.on { color: var(--accent); background: transparent; }
+.wk-row.a { min-height: 34px; border-top: 1px dotted var(--hair); }
+.wk-row.a .wk-t { font-size: 13px; font-weight: 400; color: var(--ink-2); padding: 7px 0 7px 26px; position: relative; }
+.wk-row.a .wk-t::before { content: ""; position: absolute; left: 4px; top: 11px; width: 11px; height: 11px; border: 1.5px solid var(--hair-2); }
+.wk-row.a .wk-own { color: var(--muted); font-size: 11.5px; }
+.wk-row.a .wk-own .initials { width: 18px; height: 18px; font-size: 8.5px; }
+.wk-add { padding: 6px 0 8px 94px; font-size: 11px; border-top: 1px dotted var(--hair); }
+.wk-add a, .wk-gempty a { color: var(--ink-2); text-decoration: underline; cursor: pointer; }
+.wk-gempty { color: var(--muted); font-size: 12px; padding: 10px 0 4px 68px; }
+
 
 .table { display: grid; grid-template-columns: 28px 26px minmax(220px, 2.2fr) minmax(0, 5fr) minmax(90px, auto) minmax(95px, auto); border: 1px solid var(--rule); background: var(--surface); }
 .th { background: var(--header-bg); color: var(--header-ink); font-weight: 700; font-size: 10px; line-height: 1; letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 10px; border-right: 1px solid rgba(255,255,255,0.08); }
@@ -111,16 +156,16 @@ main { padding: 12px 0 80px; }
 .cell.owner.unassigned { color: var(--muted); }
 .cell.owner.unassigned .initials { background: transparent; border-style: dashed; color: var(--muted); }
 .cell.due { font-family: var(--mono); font-weight: 600; font-size: 11px; font-variant-numeric: tabular-nums; color: var(--ink); white-space: nowrap; letter-spacing: 0.02em; }
-.cell.due .tag { display: inline-block; padding: 3px 7px; border: 1px solid var(--hair-2); background: var(--surface); }
-.cell.due .tag.warn { color: var(--warn); border-color: var(--warn); font-weight: 700; }
-.cell.due .tag.crit { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); font-weight: 700; }
-.cell.due .tag.good { color: var(--good); border-color: var(--good); }
-.cell.due .tag.unset { color: var(--muted); border-style: dashed; }
+.tag { display: inline-block; padding: 3px 0; font-family: var(--mono); font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; white-space: nowrap; color: var(--muted); }
+.tag.warn { color: var(--warn); font-weight: 700; }
+.tag.crit { color: var(--accent-ink); background: var(--accent); font-weight: 700; padding: 3px 7px; }
+.tag.good { color: var(--good); font-weight: 700; }
+.tag.unset { color: var(--hair-2); }
 .dept-chip { display: inline-block; margin-left: 8px; padding: 1px 6px; background: var(--sunk); color: var(--ink-2); font-family: var(--mono); font-weight: 600; font-size: 10px; letter-spacing: 0.02em; border: 1px solid var(--hair); text-transform: none; }
 
 .band { grid-column: 1 / -1; background: var(--header-bg); color: var(--header-ink); padding: 9px 12px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 2px solid var(--rule); }
 .band .label { font-weight: 700; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
-.band .label .sub { color: rgba(255,255,255,0.65); margin-left: 12px; font-weight: 500; letter-spacing: 0.06em; }
+.band .label.sub, .band .label .sub { color: rgba(255,255,255,0.65); margin-left: 12px; font-weight: 500; letter-spacing: 0.06em; }
 .band .btn { background: transparent; color: var(--header-ink); border-color: rgba(255,255,255,0.4); }
 .band .btn:hover { background: rgba(255,255,255,0.1); }
 .band .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
@@ -147,15 +192,13 @@ main { padding: 12px 0 80px; }
 .focus-action .owner { padding: 0 10px; font-size: 13px; }
 .focus-action .owner .initials { display: inline-grid; place-items: center; width: 22px; height: 22px; background: var(--sunk); color: var(--ink); font-weight: 700; font-size: 10px; border: 1px solid var(--hair-2); margin-right: 7px; vertical-align: -5px; }
 .focus-action .due { padding: 0 10px; font-family: var(--mono); font-weight: 600; font-size: 12px; font-variant-numeric: tabular-nums; }
-.focus-action .due .tag { display: inline-block; padding: 3px 7px; border: 1px solid var(--hair-2); }
-.focus-action .due .tag.warn { color: var(--warn); border-color: var(--warn); font-weight: 700; }
-.focus-action .due .tag.crit { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); font-weight: 700; }
-.focus-action .due .tag.good { color: var(--good); border-color: var(--good); }
-.focus-action .due .tag.unset { color: var(--muted); border-style: dashed; }
 .focus-action .dept { padding: 0 10px 0 0; font-family: var(--mono); font-weight: 600; font-size: 11px; color: var(--muted); text-align: right; }
 
 body.tv .masthead { position: static; border-bottom: 4px solid var(--accent); padding-top: 18px; }
 body.tv .toolbar, body.tv .meta-row { display: none; }
+body.tv .kicker { padding-right: 190px; }
+body.tv .kpi .n { font-size: 34px; }
+body.tv .kpi .l { font-size: 11px; }
 body.tv .title { font-size: clamp(26px, 3.6vw, 44px); }
 body.tv .title .bar { width: 12px; height: 32px; }
 body.tv main { padding-top: 16px; }
@@ -167,7 +210,7 @@ body.tv .focus-action .title { font-size: 22px; font-weight: 500; padding: 16px 
 body.tv .focus-action .owner { font-size: 18px; }
 body.tv .focus-action .owner .initials { width: 32px; height: 32px; font-size: 13px; }
 body.tv .focus-action .due { font-size: 16px; }
-body.tv .focus-action .due .tag { padding: 5px 10px; }
+body.tv .focus-action .due .tag.crit { padding: 5px 10px; }
 body.tv .focus-action .dept { font-size: 14px; }
 body.tv .focus-action .check { padding: 0 12px; }
 body.tv .focus-check { width: 28px; height: 28px; font-size: 20px; border-width: 2px; }
@@ -263,6 +306,20 @@ dialog.sheet .sheet-foot { padding: 10px 20px; border-top: 1px solid var(--hair)
 
 @media (max-width: 760px) {
   .table { grid-template-columns: 24px 24px minmax(140px, 1.6fr) minmax(0, 3fr) auto auto; }
+  .kpis { flex-wrap: wrap; width: 100%; }
+  .kpi { min-width: 0; flex: 1 1 30%; padding: 6px 10px; }
+  .kpi .n { font-size: 20px; }
+  .wk-cols { display: none; }
+  .tabs { column-gap: 16px; }
+  .wk-row { grid-template-columns: 0 minmax(0, 1fr) 24px auto 26px; gap: 0 8px; }
+  .wk-ghead { grid-template-columns: 40px minmax(0, 1fr); }
+  .wk-ghead .wk-gstat { grid-column: 2; margin-top: 6px; }
+  .wk-gnum { font-size: 22px; }
+  .wk-gtitle { font-size: 16px; }
+  .wk-t { padding-left: 8px; font-size: 14px; }
+  .wk-own .name { display: none; }
+  .wk-add { padding-left: 34px; }
+  .wk-gempty { padding-left: 40px; }
   .cell.outcome { font-size: 12px; }
   .dept-table { grid-template-columns: 1fr; }
   .dept-table .th { display: none; }
@@ -277,14 +334,19 @@ dialog.sheet .sheet-foot { padding: 10px 20px; border-top: 1px solid var(--hair)
 
 <div class="masthead">
   <div class="kicker">
-    <h1 class="title"><span class="bar"></span>This Week's Punch List</h1>
-    <div class="meta-row">
-      <span id="today">—</span><span class="sep">·</span>
-      <span>SIGNED AS <span class="me" id="meName" title="Change your name">—</span></span><span class="sep">·</span>
-      <span><b id="focusCount">0</b> IN FOCUS</span><span class="sep">·</span>
-      <span><b id="activeCount">0</b> OPEN</span><span class="sep">·</span>
-      <span><b id="completeCount">0</b> DONE</span><span class="sep">·</span>
-      <span>NEXT GRANT <b class="crit" id="countdown">—</b></span>
+    <div>
+      <h1 class="title"><span class="bar"></span>This Week's Punch List</h1>
+      <div class="meta-row">
+        <span id="today">—</span><span class="sep">·</span>
+        <span>SIGNED AS <span class="me" id="meName" title="Change your name">—</span></span>
+      </div>
+    </div>
+    <div class="kpis">
+      <div class="kpi" id="overdueKpi"><div class="n" id="overdueCount">0</div><div class="l">Overdue</div></div>
+      <div class="kpi"><div class="n" id="soonCount">0</div><div class="l">Due ≤ 3 days</div></div>
+      <div class="kpi"><div class="n" id="focusCount">0</div><div class="l">In focus</div></div>
+      <div class="kpi"><div class="n" id="activeCount">0</div><div class="l">Open outcomes</div></div>
+      <div class="kpi"><div class="n" id="countdown">—</div><div class="l" id="countdownLabel">Next Grant</div></div>
     </div>
   </div>
   <div class="toolbar">
@@ -391,16 +453,17 @@ const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Math.rando
 const todayYMD = () => new Date().toISOString().slice(0, 10);
 const parseYMD = (s) => { if (!s) return null; const [y, m, d] = s.split('-').map(Number); if (!y) return null; return new Date(y, (m || 1) - 1, d || 1); };
 const fmtDueTag = (due) => {
-  if (!due) return { text: '—', cls: 'unset' };
+  if (!due) return { text: 'NO DATE', cls: 'unset' };
   const t = parseYMD(todayYMD()).getTime();
   const d = parseYMD(due).getTime();
   const days = Math.round((d - t) / (1000 * 60 * 60 * 24));
   const mmdd = due.slice(5).replace('-', '/');
-  if (days < 0) return { text: mmdd + ' · −' + Math.abs(days) + 'd', cls: 'crit' };
+  if (days < 0) return { text: mmdd + ' · ' + Math.abs(days) + 'D LATE', cls: 'crit' };
   if (days === 0) return { text: 'TODAY', cls: 'crit' };
-  if (days <= 3) return { text: mmdd + ' · ' + days + 'd', cls: 'warn' };
+  if (days <= 3) return { text: mmdd + ' · ' + days + 'D', cls: 'warn' };
   return { text: mmdd, cls: '' };
 };
+const daysUntil = (due) => { if (!due) return null; return Math.round((parseYMD(due).getTime() - parseYMD(todayYMD()).getTime()) / 864e5); };
 const fmtRelative = (iso) => {
   if (!iso) return '';
   const diff = Date.now() - new Date(iso).getTime();
@@ -563,11 +626,20 @@ function render() {
   const active = state.outcomes.filter(o => o.status !== 'complete');
   const complete = state.outcomes.filter(o => o.status === 'complete');
   const focusItems = allFocusItems();
+  const openItems = [...active, ...state.actions.filter(a => a.status !== 'complete')];
+  const overdue = openItems.filter(x => { const d = daysUntil(x.due); return d !== null && d < 0; }).length;
+  const soon = openItems.filter(x => { const d = daysUntil(x.due); return d !== null && d >= 0 && d <= 3; }).length;
+  $('#overdueCount').textContent = overdue;
+  $('#overdueKpi').classList.toggle('crit', overdue > 0);
+  $('#soonCount').textContent = soon;
   $('#activeCount').textContent = active.length;
-  $('#completeCount').textContent = complete.length;
   $('#focusCount').textContent = focusItems.length;
   const next = nextGrantFrom(state.meta.lastGrantMeeting);
-  $('#countdown').textContent = next.label;
+  const countdown = $('#countdown'); countdown.textContent = '';
+  if (next.target) {
+    countdown.append(next.target.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(), el('small', { text: String(next.target.getMonth() + 1).padStart(2, '0') + '/' + String(next.target.getDate()).padStart(2, '0') }));
+    $('#countdownLabel').textContent = 'Next Grant · ' + next.label.toLowerCase();
+  } else countdown.textContent = next.label;
   const stage = $('#stage'); stage.textContent = '';
   if (state.view === 'focus') renderFocus(stage);
   else if (state.view === 'depts') renderDepts(stage);
@@ -616,39 +688,70 @@ function buildHeader() {
   ];
 }
 
+function urgencyClass(due) { const d = daysUntil(due); return d === null ? '' : d <= 0 ? ' u-crit' : d <= 3 ? ' u-warn' : ''; }
+function wkOwner(name) {
+  return name
+    ? el('div', { class: 'wk-own' }, [el('span', { class: 'initials', text: initials(name) }), el('span', { class: 'name', text: name })])
+    : el('div', { class: 'wk-own unassigned' }, [el('span', { class: 'initials', text: '?' }), el('span', { class: 'name', text: 'Unassigned' })]);
+}
+function wkDue(due) { const d = fmtDueTag(due); return el('div', { class: 'wk-due' }, [el('span', { class: 'tag' + (d.cls ? ' ' + d.cls : ''), text: d.text })]); }
+function wkTitle(kind, id, kids) {
+  return el('div', { class: 'wk-t', role: 'button', tabindex: '0', onclick: () => openDrawer(kind, id), onkeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDrawer(kind, id); } } }, kids);
+}
+
 function renderWeek(stage) {
-  const activeByGoal = new Map();
-  state.outcomes.filter(o => o.status !== 'complete').forEach(o => {
-    const arr = activeByGoal.get(o.goalId) || []; arr.push(o); activeByGoal.set(o.goalId, arr);
-  });
   const goals = [...state.goals].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-  const visible = goals.filter(g => activeByGoal.has(g.id));
-  const table = el('div', { class: 'table', role: 'table' });
-  buildHeader().forEach(h => table.appendChild(h));
-  if (visible.length === 0) {
-    table.appendChild(el('div', { class: 'empty' }, [el('h3', { text: 'Nothing on the list' }), el('p', { text: 'Add a main outcome and start committing to contributing outcomes.' })]));
-    stage.appendChild(table); return;
+  if (goals.length === 0) {
+    stage.appendChild(el('div', { class: 'empty', style: 'border:1px solid var(--hair);' }, [el('h3', { text: 'Nothing on the list' }), el('p', { text: 'Add a main outcome and start committing to contributing outcomes.' })]));
+    return;
   }
-  visible.forEach((g, idx) => {
-    const outcomes = (activeByGoal.get(g.id) || []).sort(sortByDue);
-    outcomes.forEach((o, i) => {
-      appendOutcomeRow(table, g, o, i === 0, idx + 1);
+  stage.appendChild(el('div', { class: 'wk-cols' }, [
+    el('div', { text: 'Main' }), el('div', { text: 'Contributing outcome / actions' }), el('div', { text: 'Owner' }), el('div', { class: 'r', text: 'Due' }), el('div', { title: 'Pin to Focus', text: '★' }),
+  ]));
+  goals.forEach((g, idx) => {
+    const all = state.outcomes.filter(o => o.goalId === g.id);
+    const open = all.filter(o => o.status !== 'complete').sort(sortByDue);
+    const done = all.length - open.length;
+    const late = open.filter(o => { const d = daysUntil(o.due); return d !== null && d < 0; }).length;
+    const sec = el('section', { class: 'wk-goal' });
+    sec.appendChild(el('div', { class: 'wk-ghead' }, [
+      el('div', { class: 'wk-gnum', text: String(idx + 1).padStart(2, '0') }),
+      el('div', { class: 'wk-gtitle', text: g.title }),
+      el('div', { class: 'wk-gstat' }, [
+        late ? el('span', { class: 'late', text: late + ' overdue' }) : null,
+        all.length ? el('span', { text: done + ' of ' + all.length + ' done' }) : null,
+        all.length ? el('div', { class: 'wk-segs' }, all.map((_, j) => el('div', { class: 'wk-seg' + (j < done ? ' on' : '') }))) : null,
+      ]),
+    ]));
+    if (open.length === 0) {
+      sec.appendChild(el('div', { class: 'wk-gempty' }, [
+        all.length ? 'All contributing outcomes done — ' : 'No contributing outcomes yet — ',
+        el('a', { text: '+ add one', onclick: (e) => { e.preventDefault(); $('#addOutcomeBtn').click(); $('#aoGoal').value = g.id; } }),
+      ]));
+    }
+    open.forEach(o => {
       const acts = state.actions.filter(a => a.outcomeId === o.id && a.status !== 'complete').sort(sortByDue);
-      if (acts.length === 0) {
-        table.appendChild(el('div', { class: 'cell action-cell' }));
-        table.appendChild(el('div', { class: 'cell action-cell' }));
-        table.appendChild(el('div', { class: 'cell action-cell' }));
-        const addCell = el('div', { class: 'cell action-empty' });
-        addCell.appendChild(el('a', { text: '+ add an action', onclick: (e) => { e.preventDefault(); openAddActionFor(o.id); } }));
-        table.appendChild(addCell);
-        table.appendChild(el('div', { class: 'cell action-cell' }));
-        table.appendChild(el('div', { class: 'cell action-cell' }));
-      } else {
-        acts.forEach(a => appendActionRow(table, a));
-      }
+      const notes = state.logs.filter(l => l.outcomeId === o.id && l.kind !== 'system').length;
+      const meta = [acts.length ? acts.length + ' action' + (acts.length === 1 ? '' : 's') : null, notes ? notes + ' note' + (notes === 1 ? '' : 's') : null].filter(Boolean).join(' · ');
+      sec.appendChild(el('div', { class: 'wk-row o' + urgencyClass(o.due) }, [
+        el('div'),
+        wkTitle('outcome', o.id, [o.title, meta ? el('span', { class: 'meta', text: meta }) : null]),
+        wkOwner(o.owner), wkDue(o.due),
+        el('div', { class: 'wk-pin' }, [buildPinButton(o.inFocus, () => toggleOutcomeFocus(o.id, !o.inFocus))]),
+      ]));
+      acts.forEach(a => {
+        const dept = a.department ? deptNameById(a.department) : null;
+        sec.appendChild(el('div', { class: 'wk-row a' }, [
+          el('div'),
+          wkTitle('action', a.id, [a.title, dept ? el('span', { class: 'dept-chip', text: dept }) : null]),
+          wkOwner(a.owner), wkDue(a.due),
+          el('div', { class: 'wk-pin' }, [buildPinButton(a.inFocus, () => toggleActionFocus(a.id, !a.inFocus))]),
+        ]));
+      });
+      if (acts.length === 0) sec.appendChild(el('div', { class: 'wk-add' }, [el('a', { text: '+ add an action', onclick: (e) => { e.preventDefault(); openAddActionFor(o.id); } })]));
     });
+    stage.appendChild(sec);
   });
-  stage.appendChild(table);
 }
 
 function appendOutcomeRow(table, goal, o, isFirstInGroup, goalIdx) {
